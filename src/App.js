@@ -1,13 +1,16 @@
 import React from "react";
-import Principal from "./paginas/principal/principal";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 
 //MUI IMPORTS
 import {StyledEngineProvider} from "@mui/material";
 import {CssBaseline} from "@mui/material";
 
-//Components
+//COMPONENTS IMPORTS
 import Header from "./component/header/header";
+
+//PAGES IMPORTS
+import Principal from "./paginas/principal/principal";
+import Listados from "./paginas/listados/listados";
 
 function App() {
   return (
@@ -18,7 +21,7 @@ function App() {
                 <Header/>
                 <Routes>
                     <Route path={'/'} element={<Principal/>}></Route>
-                    <Route path={'/acceder'} element={''}></Route>
+                    <Route path={'/listados'} element={<Listados/>}></Route>
                     <Route></Route>
                 </Routes>
             </BrowserRouter>
