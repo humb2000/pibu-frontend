@@ -1,7 +1,16 @@
-.leftNav {
-    margin-right: auto;
+.cityImg {
+    width: 100%;
+    height: 92vh;
 }
-.rightNav {
-    margin-left: auto;
-    margin-right: 10rem;
+.textoSuperpuesto {
+    position: absolute;
+    z-index: 100;
+    top: 100px;
+    left: 20px;
+    text-align: center;
+}
+.textoPrincipal{
+    color: white;
+    font-weight: bolder;
+    -webkit-text-stroke: 2px black;
 }

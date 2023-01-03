@@ -1,29 +1,28 @@
 import React from "react";
 
-import {CssBaseline, AppBar, Toolbar, Button, Typography } from "@mui/material";
+//MUI IMPORTS
+import {Typography } from "@mui/material";
 
-import {LoginButton, PropertyButton} from "../../estilos/botones";
-import './principal.css'
+//ESTILOS IMPORTS
+import {HomeButton} from "../../estilos/botones";
+import './principal.css';
+
+//ACTIVOS
+import city from '../../activos/city.jfif'
 
 function Principal() {
     return(
         <>
-            <CssBaseline/>
-            <AppBar position="static" style={{backgroundColor: 'black'}}>
-                <Toolbar>
-                    <div className={'leftNav'}>
-                        <Button color="inherit"><Typography variant={'h4'}>PIBU</Typography></Button>
-                    </div>
-                    <div>
-                        <Button color="inherit"><Typography variant={'h6'}>Listados</Typography></Button>
-                        <Button color="inherit"><Typography variant={'h6'}>Agencias</Typography></Button>
-                    </div>
-                    <div className={'rightNav'}>
-                        <PropertyButton>Agregar Propiedad</PropertyButton>
-                        <LoginButton >Acceder</LoginButton>
-                    </div>
-                </Toolbar>
-            </AppBar>
+            <div style={{position: 'relative'}}>
+                <img src={city} className={'cityImg'}/>
+                <div className={'textoSuperpuesto'}>
+                <Typography variant={'h2'} className={'textoPrincipal'}>
+                    ENCUENTRA TU <span style={{color: 'green'}}>SIGUIENTE PROPIEDAD</span> EN EL SITIO WEB PIBU
+                </Typography>
+                    <HomeButton variant={'contained'}>VER TODAS LAS PROPIEDADES</HomeButton>
+            </div>
+            </div>
+
         </>
     )
 }

@@ -25,3 +25,11 @@ export const LoginButton = styled(Button)`
     }
 `;
 
+export const HomeButton = styled(Button)`
+    font-size: 3rem;
+    background-color: green;
+    border-radius: 15px;
+    margin-top: 2rem;
+    box-shadow: 3px 3px 3px black;
+`;
+
