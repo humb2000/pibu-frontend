@@ -3,10 +3,13 @@ import React, {useState} from 'react';
 //REACT LEAFLET IMPORTS
 import {MapContainer, TileLayer, Marker, Popup} from "react-leaflet";
 import {Icon} from "leaflet/dist/leaflet-src.esm";
+
+//ESTILOS IMPORTS
 import 'leaflet/dist/leaflet.css'
+import {CardStyle, CardMediaImagenStyle} from "../../estilos/card";
 
 //MUI IMPORTS
-import {Grid, AppBar, Typography, Button} from "@mui/material";
+import {Grid, AppBar, Typography, Button, Card, CardHeader, CardMedia, CardContent} from "@mui/material";
 
 //MAPS ICONS IMPORTS
 import houseIconPng from '../../activos/Mapicons/house.png';
@@ -47,10 +50,40 @@ function Listados() {
     return (
         <Grid container>
             <Grid item xs={4}>
-                <Button onClick={VeEste}>Ve Este</Button>
-                <Button onClick={VeCentro}>Ve Centro</Button>
+                {miListado.map((listing) => {
+                    return(
+                        <CardStyle key={listing.id}>
+                          <CardHeader
+                            // action={
+                            //   <IconButton aria-label="settings">
+                            //     <MoreVertIcon />
+                            //   </IconButton>
+                            // }
+                            title={listing.title}
+                          />
+                          <CardMediaImagenStyle
+                            component="img"
+                            image={listing.picture1}
+                            alt={listing.title}
+                          />
+                          <CardContent>
+                            <Typography variant="body2" >
+                                {listing.description.substring(0, 200)}...
+                            </Typography>
+                          </CardContent>
+                          {/*<CardActions disableSpacing>*/}
+                          {/*  <IconButton aria-label="add to favorites">*/}
+                          {/*    <FavoriteIcon />*/}
+                          {/*  </IconButton>*/}
+                          {/*  <IconButton aria-label="share">*/}
+                          {/*    <ShareIcon />*/}
+                          {/*  </IconButton>*/}
+                          {/*</CardActions>*/}
+                        </CardStyle>
+                    );
+                })}
             </Grid>
-            <Grid item xs={8}>
+            <Grid item xs={8} style={{marginTop: '0.5rem'}}>
                 <AppBar position={'sticky'}>
                     <div>
                         <MapContainer center={center}
@@ -73,7 +106,6 @@ function Listados() {
                                     else if (listing.listing_type === 'Office'){
                                         return officeIcon
                                     }
-
                                 }
                                     return (
                                         <Marker
@@ -84,6 +116,17 @@ function Listados() {
                                                 listing.location.coordinates[1]
                                             ]}
                                         >
+                                            <Popup>
+                                                <Typography variant={'h5'}>{listing.title}</Typography>
+                                                <img
+                                                    src={listing.picture1}
+                                                    style={{ height: '14rem', width: '18rem' }}
+                                                />
+                                                <Typography variant={'body1'}>
+                                                    {listing.description.substring(0, 150)}...
+                                                </Typography>
+                                                <Button variant={'contained'} fullWidth>Detalles</Button>
+                                            </Popup>
 
                                         </Marker>
                                     );
