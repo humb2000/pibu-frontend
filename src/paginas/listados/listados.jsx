@@ -6,7 +6,7 @@ import {Icon} from "leaflet/dist/leaflet-src.esm";
 
 //ESTILOS IMPORTS
 import 'leaflet/dist/leaflet.css'
-import {CardStyle, CardMediaImagenStyle} from "../../estilos/card";
+import {CardStyle, CardMediaImagenStyle, TypographyPrice} from "../../estilos/card";
 
 //MUI IMPORTS
 import {Grid, AppBar, Typography, Button, Card, CardHeader, CardMedia, CardContent} from "@mui/material";
@@ -15,6 +15,7 @@ import {Grid, AppBar, Typography, Button, Card, CardHeader, CardMedia, CardConte
 import houseIconPng from '../../activos/Mapicons/house.png';
 import apartmentIconPng from '../../activos/Mapicons/apartment.png';
 import officeIconPng from '../../activos/Mapicons/office.png';
+
 //ACIVOS IMPORTS
 import img1 from '../../activos/img1.jpg';
 import miListado from '../../activos/Data/Dummydata'
@@ -71,6 +72,23 @@ function Listados() {
                                 {listing.description.substring(0, 200)}...
                             </Typography>
                           </CardContent>
+
+                            {listing.property_status === 'Sale' ? (
+                                <TypographyPrice>
+                                    {listing.listing_type}: $
+                                    {listing.price.toString().replace
+                                    (/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                </TypographyPrice>
+                            ) : (
+                                <TypographyPrice>
+                                    {listing.listing_type}: $
+                                    {listing.price.toString().replace
+                                    (/\B(?=(\d{3})+(?!\d))/g, ",")}{' '}
+                                    / {listing.rental_frequency}
+                                </TypographyPrice>)
+                            }
+
+
                           {/*<CardActions disableSpacing>*/}
                           {/*  <IconButton aria-label="add to favorites">*/}
                           {/*    <FavoriteIcon />*/}
@@ -88,7 +106,7 @@ function Listados() {
                     <div>
                         <MapContainer center={center}
                                       zoom={17}
-                                      style={{width: '100vw', height: '100vh'}}
+                                      style={{width: '66vw', height: '97vh'}}
                                       scrollWheelZoom={true}>
                             <TileLayer
                                 url={'https://api.maptiler.com/maps/basic-v2/256/{z}/{x}/{y}.png?key=5slgzrA6fvk9w4nOG05e'}

@@ -1,10 +1,20 @@
 . cardStyle {
     margin: 0.5rem;
     border: 1px solid black;
+    position: relative;
 }
 .imagenStyle {
     padding-left: 1rem;
     padding-right: 1rem;
     height: 20rem;
     width: 30rem;
+}
+.TypographyPrice {
+    position: absolute;
+    background: green;
+    z-index: 1000;
+    color: white;
+    top: 100px;
+    left: 20px;
+    padding: 5px;
 }
