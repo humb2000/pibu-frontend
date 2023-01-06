@@ -7,6 +7,7 @@ import {CssBaseline} from "@mui/material";
 
 //COMPONENTS IMPORTS
 import Header from "./component/header/header";
+import Testing from "./component/testing";
 
 //PAGES IMPORTS
 import Principal from "./paginas/principal/principal";
@@ -22,6 +23,7 @@ function App() {
                 <Routes>
                     <Route path={'/'} element={<Principal/>}></Route>
                     <Route path={'/listados'} element={<Listados/>}></Route>
+                    <Route path={'/testing'} element={<Testing/>}></Route>
                     <Route></Route>
                 </Routes>
             </BrowserRouter>

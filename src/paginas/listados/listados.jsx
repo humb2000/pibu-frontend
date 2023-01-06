@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import Axios from 'axios';
 
 //REACT LEAFLET IMPORTS
 import {MapContainer, TileLayer, Marker, Popup} from "react-leaflet";
@@ -9,7 +10,7 @@ import 'leaflet/dist/leaflet.css'
 import {CardStyle, CardMediaImagenStyle, TypographyPrice} from "../../estilos/card";
 
 //MUI IMPORTS
-import {Grid, AppBar, Typography, Button, Card, CardHeader, CardMedia, CardContent} from "@mui/material";
+import {Grid, AppBar, Typography, Button, Card, CardHeader, CardMedia, CardContent, CircularProgress} from "@mui/material";
 
 //MAPS ICONS IMPORTS
 import houseIconPng from '../../activos/Mapicons/house.png';
@@ -19,10 +20,16 @@ import officeIconPng from '../../activos/Mapicons/office.png';
 //ACIVOS IMPORTS
 import img1 from '../../activos/img1.jpg';
 import miListado from '../../activos/Data/Dummydata'
+import dummydata from "../../activos/Data/Dummydata";
 
 const center = [21.376324723140478, -77.91409596471246];
 
 function Listados() {
+
+    // fetch('http://localhost:8000/api/listings/')
+    //     .then( response => response.json())
+    //     .then(data => console.log(data))
+
     const houseIcon = new Icon({
         iconUrl: houseIconPng,
         iconSize: [40, 40],
@@ -48,10 +55,45 @@ function Listados() {
             setLongitud(-77.91425145168371);
         }
 
+    const [allListings, setAllListings] = useState([])
+    const [dataIsLoading, setDataIsLoading] = useState(true)
+
+    useEffect(() => {
+        const source = Axios.CancelToken.source();
+        async function GetAllListings() {
+            try {
+                const response = await Axios.get(
+                    'http://localhost:8000/api/listings/', {cancelToken: source.token}
+                );
+                setAllListings(response.data);
+                setDataIsLoading(false)
+            } catch (error) {
+                console.log(error.response);
+            }
+        }
+        GetAllListings();
+        return ()=> {
+            source.cancel()
+        }
+    }, [])
+
+    if (dataIsLoading === false){
+        console.log(allListings[0].location);
+    }
+
+    if (dataIsLoading === true){
+        return (
+            <Grid container justifyContent={'center'} alignItems={'center'} style={{height: '100vh'}}>
+                <CircularProgress />
+            </Grid>
+        );
+    }
+
+
     return (
         <Grid container>
             <Grid item xs={4}>
-                {miListado.map((listing) => {
+                {allListings.map((listing) => {
                     return(
                         <CardStyle key={listing.id}>
                           <CardHeader
@@ -113,7 +155,7 @@ function Listados() {
                                 attribution={'<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'}
                             />
 
-                            {miListado.map((listing) => {
+                            {allListings.map((listing) => {
                                 function inconDisplay(){
                                     if(listing.listing_type === 'House'){
                                         return houseIcon
