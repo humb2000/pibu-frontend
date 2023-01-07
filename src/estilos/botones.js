@@ -33,3 +33,12 @@ export const HomeButton = styled(Button)`
     box-shadow: 3px 3px 3px black;
 `;
 
+export const LogInOutButton = styled(Button)`
+    background-color: green;
+    color: white;
+    font-size: 1.1rem;
+    margin-left: 1rem;
+    &:hover {
+        background-color: #03a9f4;
+    }
+`;

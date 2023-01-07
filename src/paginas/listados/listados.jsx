@@ -10,7 +10,8 @@ import 'leaflet/dist/leaflet.css'
 import {CardStyle, CardMediaImagenStyle, TypographyPrice} from "../../estilos/card";
 
 //MUI IMPORTS
-import {Grid, AppBar, Typography, Button, Card, CardHeader, CardMedia, CardContent, CircularProgress} from "@mui/material";
+import {Grid, AppBar, Typography, Button, CardHeader,
+        CardContent, CircularProgress} from "@mui/material";
 
 //MAPS ICONS IMPORTS
 import houseIconPng from '../../activos/Mapicons/house.png';
