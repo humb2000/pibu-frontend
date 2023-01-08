@@ -27,7 +27,6 @@ function App() {
                     <Route path={'/testing'} element={<Testing/>}></Route>
                     <Route path={'/registrar'} element={<Registrar/>}></Route>
                     <Route path={'/acceder'} element={<Acceder/>}></Route>
-                    <Route></Route>
                 </Routes>
             </BrowserRouter>
         </StyledEngineProvider>

@@ -76,7 +76,7 @@ function Listados() {
         return ()=> {
             source.cancel()
         }
-    }, [])
+    }, []);
 
     if (dataIsLoading === false){
         console.log(allListings[0].location);
@@ -182,6 +182,7 @@ function Listados() {
                                                 <img
                                                     src={listing.picture1}
                                                     style={{ height: '14rem', width: '18rem' }}
+                                                    alt={''}
                                                 />
                                                 <Typography variant={'body1'}>
                                                     {listing.description.substring(0, 150)}...

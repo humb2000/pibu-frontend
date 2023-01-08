@@ -14,7 +14,7 @@ function Principal() {
     return(
         <>
             <div style={{position: 'relative'}}>
-                <img src={city} className={'cityImg'}/>
+                <img src={city} className={'cityImg'} alt={' '}/>
                 <div className={'textoSuperpuesto'}>
                 <Typography variant={'h2'} className={'textoPrincipal'}>
                     ENCUENTRA TU <span style={{color: 'green'}}>SIGUIENTE PROPIEDAD</span> EN EL SITIO WEB PIBU
