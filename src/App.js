@@ -1,5 +1,6 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {useImmerReducer} from "use-immer";
 
 //MUI IMPORTS
 import {StyledEngineProvider} from "@mui/material";
@@ -14,24 +15,75 @@ import Principal from "./paginas/principal/principal";
 import Listados from "./paginas/listados/listados";
 import Registrar from "./paginas/registrar/registrar";
 import Acceder from "./paginas/acceder/acceder";
+import AddPropiedad from "./paginas/agregar-propiedad/add-propiedad";
+
+//CONTEXT IMPORT
+import DispatchContext from "./contexts/dispatch-context";
+import StateContext from "./contexts/state-context";
+
 function App() {
-  return (
-    <>
-        <StyledEngineProvider injectFirst>
-            <BrowserRouter>
-                <CssBaseline/>
-                <Header/>
-                <Routes>
-                    <Route path={'/'} element={<Principal/>}></Route>
-                    <Route path={'/listados'} element={<Listados/>}></Route>
-                    <Route path={'/testing'} element={<Testing/>}></Route>
-                    <Route path={'/registrar'} element={<Registrar/>}></Route>
-                    <Route path={'/acceder'} element={<Acceder/>}></Route>
-                </Routes>
-            </BrowserRouter>
-        </StyledEngineProvider>
-    </>
-  );
+
+    const initialState = {
+        userUsername: localStorage.getItem('theUserUsername'),
+        userEmail: localStorage.getItem('theUserEmail'),
+        userId: localStorage.getItem('theUserId'),
+        userToken: localStorage.getItem('theUserToken'),
+        userIsLogged: !!localStorage.getItem('theUserUsername'),
+    }
+    function ReducerFuction(draft, action) {
+        switch (action.type) {
+            case 'catchToken':
+                draft.userToken = action.tokenValue;
+                break;
+            case 'userSignIn':
+                draft.userUsername = action.usernameInfo;
+                draft.userEmail = action.emailInfo;
+                draft.userId = action.idInfo;
+                draft.userIsLogged = true;
+                break;
+            case 'logout':
+                draft.userIsLogged = false
+                break;
+        }
+    }
+
+    const [state, dispatch] = useImmerReducer(ReducerFuction, initialState);
+
+    useEffect(()=>{
+        if (state.userIsLogged){
+            localStorage.setItem('theUserUsername', state.userUsername);
+            localStorage.setItem('theUserEmail', state.userEmail);
+            localStorage.setItem('theUserId', state.userId);
+            localStorage.setItem('theUserToken', state.userToken);
+        }
+        else {
+            localStorage.removeItem('theUserUsername');
+            localStorage.removeItem('theUserEmail');
+            localStorage.removeItem('theUserId');
+            localStorage.removeItem('theUserToken');
+        }
+    },[state.userIsLogged])
+
+    return (
+        <StateContext.Provider value={state}>
+            <DispatchContext.Provider value={dispatch}>
+                <StyledEngineProvider injectFirst>
+                    <BrowserRouter>
+                        <CssBaseline/>
+                        <Header/>
+                        <Routes>
+                            <Route path={'/'} element={<Principal/>}></Route>
+                            <Route path={'/listados'} element={<Listados/>}></Route>
+                            <Route path={'/testing'} element={<Testing/>}></Route>
+                            <Route path={'/registrar'} element={<Registrar/>}></Route>
+                            <Route path={'/acceder'} element={<Acceder/>}></Route>
+                            <Route path={'/addpropiedad'} element={<AddPropiedad/>}></Route>
+                        </Routes>
+                    </BrowserRouter>
+                </StyledEngineProvider>
+            </DispatchContext.Provider>
+        </StateContext.Provider>
+    );
 }
 
 export default App;

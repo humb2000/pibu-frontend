@@ -1,5 +1,5 @@
 import {Button} from "@mui/material";
-import { styled } from '@mui/system';
+import {styled} from "@mui/material";
 
 
 export const PropertyButton = styled(Button)`
@@ -13,7 +13,7 @@ export const PropertyButton = styled(Button)`
     }
 `;
 
-export const LoginButton = styled(Button)`
+export const  LoginButton = styled(Button)`
     background-color: white;
     color: black;
     width: 15rem;
@@ -32,7 +32,7 @@ export const HomeButton = styled(Button)`
     box-shadow: 3px 3px 3px black;
 `;
 
-export const LogInOutButton = styled(Button)`
+export const LogInUpButton = styled(Button)`
     background-color: green;
     color: white;
     font-size: 1.1rem;

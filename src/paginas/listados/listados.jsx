@@ -148,7 +148,7 @@ function Listados() {
                 <AppBar position={'sticky'}>
                     <div>
                         <MapContainer center={center}
-                                      zoom={17}
+                                      zoom={10}
                                       style={{width: '66vw', height: '97vh'}}
                                       scrollWheelZoom={true}>
                             <TileLayer
@@ -173,8 +173,8 @@ function Listados() {
                                             key={listing.id}
                                             icon={inconDisplay()}
                                             position={[
-                                                listing.location.coordinates[0],
-                                                listing.location.coordinates[1]
+                                                listing.latitude,
+                                                listing.longitude
                                             ]}
                                         >
                                             <Popup>

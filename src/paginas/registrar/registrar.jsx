@@ -5,7 +5,7 @@ import {useImmerReducer} from "use-immer";
 
 //ESTILOS IMPORTS
 import './registrar.css'
-import {LogInOutButton} from "../../estilos/botones";
+import {LogInUpButton} from "../../estilos/botones";
 
 //MUI IMPORTS
 import {TextField, Grid, Typography} from "@mui/material";
@@ -133,8 +133,8 @@ function Registrar() {
                         />
                     </Grid>
                     <Grid item container xs={8} style={{marginTop: '1rem', marginLeft: 'auto', marginRight: 'auto'}}>
-                        <LogInOutButton
-                            variant={'contained'} fullWidth type={'submit'}>Registrar</LogInOutButton>
+                        <LogInUpButton
+                            variant={'contained'} fullWidth type={'submit'}>Registrar</LogInUpButton>
                     </Grid>
 
                 </form>
