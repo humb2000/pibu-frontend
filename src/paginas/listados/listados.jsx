@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import Axios from 'axios';
+import {useImmerReducer} from "use-immer";
 
 //REACT LEAFLET IMPORTS
-import {MapContainer, TileLayer, Marker, Popup} from "react-leaflet";
+import {MapContainer, TileLayer, Marker, Popup, useMap} from "react-leaflet";
 import {Icon} from "leaflet/dist/leaflet-src.esm";
 
 //ESTILOS IMPORTS
@@ -10,8 +11,11 @@ import 'leaflet/dist/leaflet.css'
 import {CardStyle, CardMediaImagenStyle, TypographyPrice} from "../../estilos/card";
 
 //MUI IMPORTS
-import {Grid, AppBar, Typography, Button, CardHeader,
-        CardContent, CircularProgress} from "@mui/material";
+import {
+    Grid, AppBar, Typography, Button, CardHeader,
+    CardContent, CircularProgress, IconButton, CardActions
+} from "@mui/material";
+import RoomIcon from '@mui/icons-material/Room';
 
 //MAPS ICONS IMPORTS
 import houseIconPng from '../../activos/Mapicons/house.png';
@@ -46,6 +50,26 @@ function Listados() {
 
     const [latitud, setLatitud] = useState(21.377017108458062)
     const [longitud, setLongitud] = useState(-77.91425145168371)
+
+    const initialState = {
+        mapInstance: null,
+    }
+
+    function ReducerFuction(draft, action) {
+        switch (action.type) {
+
+            case 'getMap':
+                draft.mapInstance = action.mapData;
+                break;
+        }
+    }
+
+    const [state, dispatch] = useImmerReducer(ReducerFuction, initialState);
+
+    function TheMapComponent() {
+        const map = useMap()
+        dispatch({type: 'getMap', mapData: map});
+    }
 
     function VeEste() {
         setLatitud(21.37340542068839);
@@ -97,24 +121,27 @@ function Listados() {
                 {allListings.map((listing) => {
                     return(
                         <CardStyle key={listing.id}>
-                          <CardHeader
-                            // action={
-                            //   <IconButton aria-label="settings">
-                            //     <MoreVertIcon />
-                            //   </IconButton>
-                            // }
-                            title={listing.title}
-                          />
-                          <CardMediaImagenStyle
-                            component="img"
-                            image={listing.picture1}
-                            alt={listing.title}
-                          />
-                          <CardContent>
-                            <Typography variant="body2" >
-                                {listing.description.substring(0, 200)}...
-                            </Typography>
-                          </CardContent>
+                            <CardHeader
+                                action={
+                                <IconButton aria-label="settings"
+                                          onClick={() => {
+                                              state.mapInstance.flyTo([listing.latitude, listing.longitude], 16)
+                                          }}>
+                                    <RoomIcon />
+                                </IconButton>
+                            }
+                                title={listing.title}
+                            />
+                            <CardMediaImagenStyle
+                                component="img"
+                                image={listing.picture1}
+                                alt={listing.title}
+                            />
+                            <CardContent>
+                                <Typography variant="body2" >
+                                    {listing.description.substring(0, 200)}...
+                                </Typography>
+                            </CardContent>
 
                             {listing.property_status === 'Venta' ? (
                                 <TypographyPrice>
@@ -132,14 +159,12 @@ function Listados() {
                             }
 
 
-                          {/*<CardActions disableSpacing>*/}
-                          {/*  <IconButton aria-label="add to favorites">*/}
-                          {/*    <FavoriteIcon />*/}
-                          {/*  </IconButton>*/}
-                          {/*  <IconButton aria-label="share">*/}
-                          {/*    <ShareIcon />*/}
-                          {/*  </IconButton>*/}
-                          {/*</CardActions>*/}
+                            <CardActions disableSpacing>
+                                <IconButton aria-label="add to favorites">
+                                    {listing.seller_username}
+                                </IconButton>
+                            </CardActions>
+
                         </CardStyle>
                     );
                 })}
@@ -155,6 +180,8 @@ function Listados() {
                                 url={'https://api.maptiler.com/maps/basic-v2/256/{z}/{x}/{y}.png?key=5slgzrA6fvk9w4nOG05e'}
                                 attribution={'<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'}
                             />
+
+                            <TheMapComponent />
 
                             {allListings.map((listing) => {
                                 function inconDisplay(){

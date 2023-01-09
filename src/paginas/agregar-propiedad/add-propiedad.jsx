@@ -344,7 +344,8 @@ function AddPropiedad() {
                 formData.append('seller', GlobalState.userId);
                 try {
                     const response = await Axios.post('http://localhost:8000/api/listings/create/', formData)
-                    console.log(response)
+                    console.log(response.data)
+                    navigate('/listados')
                 }catch (e) {
                     console.log(e.response)
                 }
