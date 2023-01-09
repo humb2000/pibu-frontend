@@ -41,3 +41,23 @@ export const LogInUpButton = styled(Button)`
         background-color: #03a9f4;
     }
 `;
+
+export const AddButton = styled(Button)`
+    background-color: green;
+    color: white;
+    font-size: 1.1rem;
+    margin-left: 1rem;
+    &:hover {
+        background-color: #03a9f4;
+    }
+`;
+
+export const PictureButton = styled(Button)`
+    background-color: green;
+    color: white;
+    font-size: 1.1rem;
+    margin-left: 1rem;
+    &:hover {
+        background-color: #03a9f4;
+    }
+`;

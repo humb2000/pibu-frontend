@@ -62,7 +62,8 @@ function App() {
             localStorage.removeItem('theUserId');
             localStorage.removeItem('theUserToken');
         }
-    },[state.userIsLogged])
+    },
+        [state.userIsLogged])
 
     return (
         <StateContext.Provider value={state}>

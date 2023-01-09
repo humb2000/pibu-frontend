@@ -23,7 +23,7 @@ import img1 from '../../activos/img1.jpg';
 import miListado from '../../activos/Data/Dummydata'
 import dummydata from "../../activos/Data/Dummydata";
 
-const center = [21.376324723140478, -77.91409596471246];
+const center = [21.37536564291155, -77.9153941045292];
 
 function Listados() {
 
@@ -116,7 +116,7 @@ function Listados() {
                             </Typography>
                           </CardContent>
 
-                            {listing.property_status === 'Sale' ? (
+                            {listing.property_status === 'Venta' ? (
                                 <TypographyPrice>
                                     {listing.listing_type}: $
                                     {listing.price.toString().replace
@@ -158,13 +158,13 @@ function Listados() {
 
                             {allListings.map((listing) => {
                                 function inconDisplay(){
-                                    if(listing.listing_type === 'House'){
+                                    if(listing.listing_type === 'Casa'){
                                         return houseIcon
                                     }
-                                    else if (listing.listing_type === 'Apartment'){
+                                    else if (listing.listing_type === 'Apartamento'){
                                         return apartmentIcon
                                     }
-                                    else if (listing.listing_type === 'Office'){
+                                    else if (listing.listing_type === 'Oficina'){
                                         return officeIcon
                                     }
                                 }

@@ -1,0 +1,8 @@
+.formContainer {
+    width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 3rem;
+    border: 5px solid black;
+    padding: 3rem;
+}
