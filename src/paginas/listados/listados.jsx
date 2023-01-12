@@ -23,19 +23,9 @@ import houseIconPng from '../../activos/Mapicons/house.png';
 import apartmentIconPng from '../../activos/Mapicons/apartment.png';
 import officeIconPng from '../../activos/Mapicons/office.png';
 
-//ACIVOS IMPORTS
-import img1 from '../../activos/img1.jpg';
-import miListado from '../../activos/Data/Dummydata'
-import dummydata from "../../activos/Data/Dummydata";
-
 const center = [21.37536564291155, -77.9153941045292];
 
 function Listados() {
-
-    // fetch('http://localhost:8000/api/listings/')
-    //     .then( response => response.json())
-    //     .then(data => console.log(data))
-
     const navigate = useNavigate();
 
     const houseIcon = new Icon({
@@ -51,16 +41,12 @@ function Listados() {
         iconSize: [40, 40],
     });
 
-    const [latitud, setLatitud] = useState(21.377017108458062)
-    const [longitud, setLongitud] = useState(-77.91425145168371)
-
     const initialState = {
         mapInstance: null,
     }
 
     function ReducerFuction(draft, action) {
         switch (action.type) {
-
             case 'getMap':
                 draft.mapInstance = action.mapData;
                 break;
@@ -73,15 +59,6 @@ function Listados() {
         const map = useMap()
         dispatch({type: 'getMap', mapData: map});
     }
-
-    function VeEste() {
-        setLatitud(21.37340542068839);
-        setLongitud(-77.90499246654599);
-    }
-    function VeCentro() {
-            setLatitud(21.377017108458062);
-            setLongitud(-77.91425145168371);
-        }
 
     const [allListings, setAllListings] = useState([])
     const [dataIsLoading, setDataIsLoading] = useState(true)
@@ -107,10 +84,6 @@ function Listados() {
 
     if (dataIsLoading === false){
         console.log(allListings[0].location);
-    }
-
-    function TitleDisplay() {
-
     }
 
     if (dataIsLoading === true){
@@ -186,6 +159,7 @@ function Listados() {
             <Grid item xs={8} style={{marginTop: '0.5rem'}}>
                 <AppBar position={'sticky'}>
                     <div style={{backgroundColor:'white'}}>
+
                         <MapContainer center={center}
                                       zoom={10}
                                       style={{width: '65vw', height: '90vh', border:'solid black'}}
@@ -243,19 +217,8 @@ function Listados() {
                                         </Marker>
                                     );
                                 })}
-
-                            {/*<Marker*/}
-                            {/*    icon={houseIcon}*/}
-                            {/*    position={[latitud, longitud]}*/}
-                            {/*>*/}
-                            {/*    <Popup>*/}
-                            {/*        <Typography variant={'h5'}>Un Titulo</Typography>*/}
-                            {/*        <img src={img1} style={{ height: '14rem', width: '18rem' }}/>*/}
-                            {/*        <Typography variant={'body1'}>este es algun texto debajo del titulo</Typography>*/}
-                            {/*        <Button variant={'contained'} fullWidth>Un Link</Button>*/}
-                            {/*    </Popup>*/}
-                            {/*</Marker>*/}
                         </MapContainer>
+
                     </div>
                 </AppBar>
             </Grid>

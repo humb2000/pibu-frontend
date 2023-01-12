@@ -1,45 +1,22 @@
-import React, {useState, useEffect, useRef, useMemo, useContext} from 'react';
+import React, {useEffect} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
 import Axios from "axios";
-
-//REACT LEAFLET IMPORTS
-import { MapContainer, TileLayer, useMap, Marker} from 'react-leaflet'
-import {Icon} from "leaflet/dist/leaflet-src.esm";
+import {useImmerReducer} from "use-immer";
 
 //MUI IMPORTS
-import {
-    TextField,
-    Grid,
-    Typography,
-    FormControlLabel,
-    Checkbox,
-    CircularProgress,
-    Button,
-    IconButton, Card, CardMedia, CardContent, CardActions
-} from "@mui/material";
+import {Grid, Typography, CircularProgress, IconButton, Card, CardMedia, CardContent,
+    CardActions} from "@mui/material";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
-
-//CONTEXT IMPORT
-// import StateContext from "../../contexts/state-context";
 
 //ACTIVOS IMPORT
 import defaultProfilePicture from '../../activos/defaultProfilePicture.jpg'
 
-//ESTILOS IMPORT
-import './agencia-detalle.css'
-import icon from '../../activos/Mapicons/position.png'
-import {useImmerReducer} from "use-immer";
-import {AddButton, LogInUpButton, PictureButton} from "../../estilos/botones";
-
 
 function AgenciaDetalle() {
     const navigate = useNavigate();
-    // const GlobalState = useContext(StateContext)
-
     const params = useParams();
 
     const initialState = {
-
         userProfile: {
             agencyName: '',
             phoneNumber: '',
@@ -134,45 +111,43 @@ function AgenciaDetalle() {
                     </Grid>
                 </Grid>
 
-        <>
-            <Grid container justifyContent={'flex-start'} spacing={2} style={{padding:'10px'}}>
-                {state.userProfile.sellerListings.map((listings)=>{
+                <Grid container justifyContent={'flex-start'} spacing={2} style={{padding:'10px'}}>
+                    {state.userProfile.sellerListings.map((listings)=>{
 
-                    return (
-                    <Grid item key={listings.id} style={{marginTop:'1rem', maxWidth:'20rem', minWidth:'20rem'}}>
-                        <Card>
-                            <CardMedia component={'img'} height={'140'} alt={'Imagen de Listados'}
-                                       image={`http://localhost:8000${listings.picture1}`
-                                           ? `http://localhost:8000${listings.picture1}`
-                                           : defaultProfilePicture}
-                                       onClick={() => navigate(`/listados/${listings.id}`)}
-                                       style={{cursor:'pointer'}}
-                            />
-                            <CardContent>
-                                <Typography gutterBottom variant={'h5'} component={'div'}>
-                                    {listings.title.substring(0, 40)}
-                                    {listings.title.length > 40 ? '...' : ''}
-                                </Typography>
-                                <Typography variant={'body2'} color={'text.secondary'}>
-                                    {listings.description.substring(0, 100)}
-                                    {listings.description.length > 100 ? '...' : ''}
-                                </Typography>
-                            </CardContent>
+                        return (
+                            <Grid item key={listings.id} style={{marginTop:'1rem', maxWidth:'20rem', minWidth:'20rem'}}>
+                                <Card>
+                                    <CardMedia component={'img'} height={'140'} alt={'Imagen de Listados'}
+                                               image={`http://localhost:8000${listings.picture1}`
+                                                   ? `http://localhost:8000${listings.picture1}`
+                                                   : defaultProfilePicture}
+                                               onClick={() => navigate(`/listados/${listings.id}`)}
+                                               style={{cursor:'pointer'}}
+                                    />
+                                    <CardContent>
+                                        <Typography gutterBottom variant={'h5'} component={'div'}>
+                                            {listings.title.substring(0, 40)}
+                                            {listings.title.length > 40 ? '...' : ''}
+                                        </Typography>
+                                        <Typography variant={'body2'} color={'text.secondary'}>
+                                            {listings.description.substring(0, 100)}
+                                            {listings.description.length > 100 ? '...' : ''}
+                                        </Typography>
+                                    </CardContent>
 
-                            <CardActions>
-                                {listings.property_status === 'Venta'
-                                    ? `${listings.listing_type}: $${listings.price.toString().replace
-                                    (/\B(?=(\d{3})+(?!\d))/g, ",")}`
-                                    : `${listings.listing_type}: $${listings.price.toString().replace
-                                    (/\B(?=(\d{3})+(?!\d))/g, ",")}/${listings.rental_frequency}`}
-                            </CardActions>
+                                    <CardActions>
+                                        {listings.property_status === 'Venta'
+                                            ? `${listings.listing_type}: $${listings.price.toString().replace
+                                            (/\B(?=(\d{3})+(?!\d))/g, ",")}`
+                                            : `${listings.listing_type}: $${listings.price.toString().replace
+                                            (/\B(?=(\d{3})+(?!\d))/g, ",")}/${listings.rental_frequency}`}
+                                    </CardActions>
 
-                        </Card>
-                    </Grid>
-                    );
-            })}
-            </Grid>
-        </>
+                                </Card>
+                            </Grid>
+                        );
+                    })}
+                </Grid>
 
             </div>
         </>

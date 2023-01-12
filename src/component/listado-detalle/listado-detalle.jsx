@@ -1,13 +1,11 @@
-import React, {useState, useEffect, useRef, useMemo, useContext} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
 import Axios from "axios";
 
-//REACT LEAFLET IMPORTS
-import { MapContainer, TileLayer, useMap, Marker} from 'react-leaflet'
-import {Icon} from "leaflet/dist/leaflet-src.esm";
 
 //MUI IMPORTS
-import {Grid, CircularProgress, Breadcrumbs, Link, Typography, IconButton, Button, Dialog} from "@mui/material";
+import {Grid, CircularProgress, Breadcrumbs, Link, Typography, IconButton,
+    Button, Dialog, Snackbar, Alert} from "@mui/material";
 import RoomIcon from '@mui/icons-material/Room';
 
 //CONTEXT IMPORT
@@ -38,6 +36,8 @@ function ListadoDetalle() {
         dataIsLoading: true,
         listingInfo: '',
         sellerProfileInfo: '',
+        openSnack: false,
+        disableBtn: false,
     }
 
     function ReducerFuction(draft, action) {
@@ -50,6 +50,15 @@ function ListadoDetalle() {
                 break;
             case 'catchSellerProfileInfo':
                 draft.sellerProfileInfo = action.profileObject;
+                break;
+            case 'openTheSnack':
+                draft.openSnack = true
+                break;
+            case 'disableTheBtn':
+                draft.disableBtn = true
+                break;
+            case 'allowTheBtn':
+                draft.disableBtn = false
                 break;
         }
     }
@@ -90,6 +99,14 @@ function ListadoDetalle() {
     }, [state.listingInfo]);
     //...REQUES TODA LA INFORMACION DE LOS PERFILES...
 
+    useEffect(() => {
+        if (state.openSnack){
+            setTimeout(() => {
+                navigate('/listados');
+            }, 2000)
+        }
+    }, [state.openSnack]);
+
     //===LISTA DE IMAGENES===
     const listingPictures = [
         state.listingInfo.picture1,
@@ -122,8 +139,10 @@ function ListadoDetalle() {
             try {
                 const response = await Axios.delete(`http://localhost:8000/api/listings/${params.id}/delete/`)
                 console.log(response.data)
-                navigate('/listados')
+                dispatch({type:'openTheSnack'});
+                dispatch({type: 'disableTheBtn'});
             }catch (e) {
+                dispatch({type: 'allowTheBtn'});
                 console.log(e.response.date)
             }
         }
@@ -319,7 +338,7 @@ function ListadoDetalle() {
                             Actualizar
                         </Button>
                         <Button variant={'contained'} color={'error'}
-                                onClick={DeleteProp}
+                                onClick={DeleteProp} disabled={state.disableBtn}
                         >
                             Eliminar
                         </Button>
@@ -328,9 +347,20 @@ function ListadoDetalle() {
                         </Dialog>
                     </Grid>
                 ):('')}
-
-
             </Grid>
+
+            <Snackbar
+                    open={state.openSnack}
+                    anchorOrigin={{
+                        vertical:'bottom',
+                        horizontal:'center'
+                    }}
+                >
+                    <Alert severity="success" >
+                        Se ha eliminado correctamente esta propiedad!
+                    </Alert>
+                </Snackbar>
+
         </div>
 
     );

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, useMemo, useContext} from 'react';
+import React, {useEffect, useRef, useMemo, useContext} from 'react';
 import {useNavigate} from "react-router-dom";
 import Axios from "axios";
 
@@ -7,7 +7,7 @@ import { MapContainer, TileLayer, useMap, Marker} from 'react-leaflet'
 import {Icon} from "leaflet/dist/leaflet-src.esm";
 
 //MUI IMPORTS
-import {TextField, Grid, Typography, FormControlLabel, Checkbox} from "@mui/material";
+import {TextField, Grid, Typography, FormControlLabel, Checkbox, Snackbar, Alert} from "@mui/material";
 
 //CONTEXT
 import StateContext from "../../contexts/state-context";
@@ -82,22 +82,51 @@ function AddPropiedad() {
         userProfile: {
             agencyName: '',
             phoneNumber: '',
-        }
+        },
+        openSnack: false,
+        disableBtn: false,
+        titleErrors: {
+            hasErrors: false,
+            errorMessage: '',
+        },
+        listingTypeErrors: {
+            hasErrors: false,
+            errorMessage: '',
+        },
+        propertyStatusErrors: {
+            hasErrors: false,
+            errorMessage: '',
+        },
+        priceErrors: {
+            hasErrors: false,
+            errorMessage: '',
+        },
+        boroughErrors: {
+            hasErrors: false,
+            errorMessage: '',
+        },
+
     }
 
     function ReducerFuction(draft, action) {
         switch (action.type) {
             case 'catchTituloChange':
                 draft.tituloValue = action.tituloChosen;
+                draft.titleErrors.hasErrors = false;
+                draft.titleErrors.errorMessage = '';
                 break;
             case 'catchListingTypeChange':
                 draft.listingTypeValue = action.listingTypeChosen;
+                draft.listingTypeErrors.hasErrors = false;
+                draft.listingTypeErrors.errorMessage = '';
                 break;
             case 'catchDescriptionChange':
                 draft.descriptionValue = action.descriptionChosen;
                 break;
             case 'catchBoroughChange':
                 draft.boroughValue = action.boroughChosen;
+                draft.boroughErrors.hasErrors = false;
+                draft.boroughErrors.errorMessage = '';
                 break;
             case 'catchLatitudeChange':
                 draft.latitudeValue = action.latitudeChosen;
@@ -107,9 +136,13 @@ function AddPropiedad() {
                 break;
             case 'catchPropertyStatusChange':
                 draft.propertyStatusValue = action.propertyStatusChosen;
+                draft.propertyStatusErrors.hasErrors = false;
+                draft.propertyStatusErrors.errorMessage = '';
                 break;
             case 'catchPriceChange':
                 draft.priceValue = action.priceChosen;
+                draft.priceErrors.hasErrors = false;
+                draft.priceErrors.errorMessage = '';
                 break;
             case 'catchRentalFrequencyChange':
                 draft.rentalFrequencyValue = action.rentalFrequencyChosen;
@@ -167,6 +200,65 @@ function AddPropiedad() {
             case 'changeUserProfileInfo':
                 draft.userProfile.agencyName = action.profileObject.agency_name;
                 draft.userProfile.phoneNumber = action.profileObject.phone_number;
+                break;
+            case 'openTheSnack':
+                draft.openSnack = true
+                break;
+            case 'disableTheBtn':
+                draft.disableBtn = true
+                break;
+            case 'allowTheBtn':
+                draft.disableBtn = false
+                break;
+            case 'catchTitleErrors':
+                if (action.tituloChosen.length === 0){
+                    draft.titleErrors.hasErrors = true;
+                    draft.titleErrors.errorMessage = 'Este campo no puede estar vacio.';
+                }
+                break;
+            case 'catchListingTypeErrors':
+                if (action.listingTypeChosen.length === 0){
+                    draft.listingTypeErrors.hasErrors = true;
+                    draft.listingTypeErrors.errorMessage = 'Este campo no puede estar vacio.';
+                }
+                break;
+            case 'catchPropertyStatusErrors':
+                if (action.propertyStatusChosen.length === 0){
+                    draft.propertyStatusErrors.hasErrors = true;
+                    draft.propertyStatusErrors.errorMessage = 'Este campo no puede estar vacio.';
+                }
+                break;
+            case 'catchPriceErrors':
+                if (action.priceChosen.length === 0){
+                    draft.priceErrors.hasErrors = true;
+                    draft.priceErrors.errorMessage = 'Este campo no puede estar vacio.';
+                }
+                break;
+            case 'catchBoroughErrors':
+                if (action.boroughChosen.length === 0){
+                    draft.boroughErrors.hasErrors = true;
+                    draft.boroughErrors.errorMessage = 'Este campo no puede estar vacio.';
+                }
+                break;
+            case 'emptyTitle':
+                draft.titleErrors.hasErrors = true;
+                draft.titleErrors.errorMessage = 'Este campo no puede estar vacio.';
+                break;
+            case 'emptyListingType':
+                    draft.listingTypeErrors.hasErrors = true;
+                    draft.listingTypeErrors.errorMessage = 'Este campo no puede estar vacio.';
+                break;
+            case 'emptyPropertyStatus':
+                    draft.propertyStatusErrors.hasErrors = true;
+                    draft.propertyStatusErrors.errorMessage = 'Este campo no puede estar vacio.';
+                break;
+            case 'emptyPrice':
+                    draft.priceErrors.hasErrors = true;
+                    draft.priceErrors.errorMessage = 'Este campo no puede estar vacio.';
+                break;
+            case 'emptyBorough':
+                    draft.boroughErrors.hasErrors = true;
+                    draft.boroughErrors.errorMessage = 'Este campo no puede estar vacio.';
                 break;
         }
     }
@@ -334,9 +426,33 @@ function AddPropiedad() {
     //===ENVIAR EL FORMULARIO===
     function FormSubmit(e) {
         e.preventDefault();
-        dispatch({type: 'changeSendRequest'});
-        console.log('el registro a sido mandado')
-        console.log(state.sendRequest)
+        if (!state.titleErrors.hasErrors &&
+            !state.listingTypeErrors.hasErrors &&
+            !state.propertyStatusErrors.hasErrors &&
+            !state.priceErrors.hasErrors &&
+            !state.boroughErrors.hasErrors &&
+            state.latitudeValue &&
+            state.longitudeValue
+        ) {
+            dispatch({type: 'changeSendRequest'});
+            dispatch({type: 'disableTheBtn'})
+        } else if (state.tituloValue === ''){
+            dispatch({type: 'emptyTitle'})
+            window.scrollTo(0, 0);
+        } else if (state.listingTypeValue === ''){
+            dispatch({type: 'emptyListingType'})
+            window.scrollTo(0, 0);
+        } else if (state.propertyStatusValue === ''){
+            dispatch({type: 'emptyPropertyStatus'})
+            window.scrollTo(0, 0);
+        } else if (state.priceValue === ''){
+            dispatch({type: 'emptyPrice'})
+            window.scrollTo(0, 0);
+        } else if (state.boroughValue === ''){
+            dispatch({type: 'emptyBorough'})
+            window.scrollTo(0, 500);
+        }
+
     }
 
     useEffect(() => {
@@ -367,9 +483,10 @@ function AddPropiedad() {
                 try {
                     const response = await Axios.post('http://localhost:8000/api/listings/create/', formData)
                     console.log(response.data)
-                    navigate('/listados')
+                    dispatch({type:'openTheSnack'});
                 }catch (e) {
-                    console.log(e.response)
+                    dispatch({type: 'allowTheBtn'});
+                    console.log(e.response);
                 }
             }
             AddProperty()
@@ -397,7 +514,7 @@ function AddPropiedad() {
             state.userProfile.phoneNumber !== ''
         ) {
             return(
-                <AddButton variant={'contained'} fullWidth type={'submit'}>
+                <AddButton variant={'contained'} fullWidth type={'submit'} disabled={state.disableBtn}>
                     AGREGAR PROPIEDAD
                 </AddButton>
             );
@@ -423,6 +540,14 @@ function AddPropiedad() {
         }
     }
 
+    useEffect(() => {
+        if (state.openSnack){
+            setTimeout(() => {
+                navigate('/listados');
+            }, 2000)
+        }
+    }, [state.openSnack]);
+
     return (
         <>
             <div className={'formContainer'}>
@@ -438,7 +563,13 @@ function AddPropiedad() {
                             fullWidth
                             value={state.tituloValue}
                             onChange={(e) =>
-                                dispatch({type: 'catchTituloChange', tituloChosen: e.target.value,})}
+                                dispatch({type: 'catchTituloChange',
+                                    tituloChosen: e.target.value,})}
+                            onBlur={(e) =>
+                                dispatch({type: 'catchTitleErrors',
+                                    tituloChosen: e.target.value,})}
+                            error={state.titleErrors.hasErrors}
+                            helperText={state.titleErrors.errorMessage}
                         />
                     </Grid>
 
@@ -451,9 +582,16 @@ function AddPropiedad() {
                                 fullWidth
                                 value={state.listingTypeValue}
                                 onChange={(e) =>
-                                    dispatch({
-                                        type: 'catchListingTypeChange',
-                                        listingTypeChosen: e.target.value,})}
+                                    dispatch({type: 'catchListingTypeChange',
+                                        listingTypeChosen: e.target.value,}
+                                    )}
+                                onBlur={(e) =>
+                                    dispatch({type: 'catchListingTypeErrors',
+                                        listingTypeChosen: e.target.value,}
+                                    )}
+                                error={state.listingTypeErrors.hasErrors}
+                                helperText={state.listingTypeErrors.errorMessage}
+
                                 SelectProps={{native: true}}
                                 select >
                                 {listingTypeOptions.map((option) => (
@@ -474,7 +612,16 @@ function AddPropiedad() {
                                 onChange={(e) =>
                                     dispatch({
                                         type: 'catchPropertyStatusChange',
-                                        propertyStatusChosen : e.target.value,})}
+                                        propertyStatusChosen : e.target.value,}
+                                    )}
+                                onBlur={(e) =>
+                                    dispatch({
+                                        type: 'catchPropertyStatusErrors',
+                                        propertyStatusChosen : e.target.value,}
+                                    )}
+                                error={state.propertyStatusErrors.hasErrors}
+                                helperText={state.propertyStatusErrors.errorMessage}
+
                                 SelectProps={{native: true}}
                                 select >
                                 {propertyStatusOptions.map((option) => (
@@ -517,6 +664,13 @@ function AddPropiedad() {
                                     dispatch({
                                         type: 'catchPriceChange',
                                         priceChosen : e.target.value,})}
+                                onBlur={(e) =>
+                                    dispatch({
+                                        type: 'catchPriceErrors',
+                                        priceChosen : e.target.value,})}
+                                error={state.priceErrors.hasErrors}
+                                helperText={state.priceErrors.errorMessage}
+
                             />
                         </Grid>
                     </Grid>
@@ -625,7 +779,16 @@ function AddPropiedad() {
                             onChange={(e) =>
                                 dispatch({
                                     type: 'catchBoroughChange',
-                                    boroughChosen : e.target.value,})}
+                                    boroughChosen : e.target.value,}
+                                )}
+                            onBlur={(e) =>
+                                dispatch({
+                                    type: 'catchBoroughErrors',
+                                    boroughChosen : e.target.value,}
+                                )}
+                            error={state.boroughErrors.hasErrors}
+                            helperText={state.boroughErrors.errorMessage}
+
                             SelectProps={{native: true}}
                             select >
                             {boroughOptions.map((option) => (
@@ -637,6 +800,20 @@ function AddPropiedad() {
                     </Grid>
 
                     {/*===MAPA===*/}
+                    <Grid item style={{marginTop: '1rem'}}>
+                        {state.longitudeValue && state.latitudeValue ? (
+                            <Alert severity={'success'}>
+                                Su propiedad esta localizada a {state.latitudeValue},{' '}
+                                {state.longitudeValue}
+                            </Alert>
+                        ):(
+                            <Alert severity={'warning'}>
+                                Localice su propiedad en el mapa antes de agregarla.
+                            </Alert>
+                        )}
+
+                    </Grid>
+
                     <Grid item container style={{height: '35rem', marginTop: '1rem'}}>
                         <MapContainer center={[21.37536564291155, -77.9153941045292]}
                                       zoom={9.4}
@@ -685,6 +862,17 @@ function AddPropiedad() {
 
                 </form>
 
+                <Snackbar
+                    open={state.openSnack}
+                    anchorOrigin={{
+                        vertical:'bottom',
+                        horizontal:'center'
+                    }}
+                >
+                    <Alert severity="success" >
+                        Se ha agregado la propiedad correctamente!
+                    </Alert>
+                </Snackbar>
             </div>
         </>
     )

@@ -1,17 +1,17 @@
-import React, {useState, useEffect, useRef, useMemo, useContext} from 'react';
+import React, {useEffect, useContext} from 'react';
 import {useNavigate} from "react-router-dom";
 import Axios from "axios";
 
-
 //MUI IMPORTS
-import {TextField, Grid, Typography, FormControlLabel, Checkbox, Button} from "@mui/material";
+import {TextField, Grid, Typography, FormControlLabel, Checkbox,
+    Button, Snackbar, Alert} from "@mui/material";
 
 //CONTEXT
 import StateContext from "../contexts/state-context";
 
 //ESTILOS IMPORT
 import {useImmerReducer} from "use-immer";
-import {AddButton, PictureButton} from "../estilos/botones";
+import {AddButton} from "../estilos/botones";
 
 
 const listingTypeOptions = [
@@ -36,7 +36,7 @@ function ListingUpdate(props) {
     const GlobalState = useContext(StateContext)
 
     const initialState = {
-        tituloValue: props.listingData.title,
+        titleValue: props.listingData.title,
         listingTypeValue: props.listingData.listing_type,
         descriptionValue: props.listingData.description,
         propertyStatusValue: props.listingData.property_status,
@@ -50,12 +50,15 @@ function ListingUpdate(props) {
         parkingValue: props.listingData.parking,
 
         sendRequest: 0,
+
+        openSnack: false,
+        disableBtn: false,
     }
 
     function ReducerFuction(draft, action) {
         switch (action.type) {
             case 'catchTituloChange':
-                draft.tituloValue = action.tituloChosen;
+                draft.titleValue = action.tituloChosen;
                 break;
             case 'catchListingTypeChange':
                 draft.listingTypeValue = action.listingTypeChosen;
@@ -95,6 +98,15 @@ function ListingUpdate(props) {
             case 'changeSendRequest':
                 draft.sendRequest = draft.sendRequest + 1;
                 break;
+            case 'openTheSnack':
+                draft.openSnack = true
+                break;
+            case 'disableTheBtn':
+                draft.disableBtn = true
+                break;
+            case 'allowTheBtn':
+                draft.disableBtn = false
+                break;
 
         }
     }
@@ -105,16 +117,16 @@ function ListingUpdate(props) {
     //===ENVIAR EL FORMULARIO===
     function FormSubmit(e) {
         e.preventDefault();
+           console.log('el registro a sido mandado')
         dispatch({type: 'changeSendRequest'});
-        console.log('el registro a sido mandado')
-        console.log(state.sendRequest)
+        dispatch({type: 'disableTheBtn'});
     }
 
     useEffect(() => {
         if (state.sendRequest){
             async function UpdateProperty() {
                 const formData = new FormData()
-                formData.append('title', state.tituloValue);
+                formData.append('title', state.titleValue);
                 formData.append('description', state.descriptionValue);
                 formData.append('listing_type', state.listingTypeValue);
                 formData.append('property_status', state.propertyStatusValue);
@@ -134,11 +146,12 @@ function ListingUpdate(props) {
 
                 try {
                     const response = await Axios.patch(
-                        `http://localhost:8000/api/listings/${props.listingData.id}/update/`, formData)
+                        `http://localhost:8000/api/listings/${props.listingData.id}/update/`, formData);
                     console.log(response.data)
-                    navigate(0)
+                    dispatch({type:'openTheSnack'});
                 }catch (e) {
-                    console.log(e.response)
+                    dispatch({type: 'allowTheBtn'});
+                    console.log(e.response);
                 }
             }
             UpdateProperty()
@@ -158,6 +171,13 @@ function ListingUpdate(props) {
         }
     }
 
+    useEffect(() => {
+        if (state.openSnack){
+            setTimeout(() => {
+                navigate(0);
+            }, 2000)
+        }
+    }, [state.openSnack]);
 
     return (
         <>
@@ -172,7 +192,7 @@ function ListingUpdate(props) {
                             label="Titulo*"
                             variant="standard"
                             fullWidth
-                            value={state.tituloValue}
+                            value={state.titleValue}
                             onChange={(e) =>
                                 dispatch({type: 'catchTituloChange', tituloChosen: e.target.value,})}
                         />
@@ -352,7 +372,7 @@ function ListingUpdate(props) {
                     </Grid>
 
                     <Grid item container xs={8} style={{marginTop: '1rem', marginLeft: 'auto', marginRight: 'auto'}}>
-                        <AddButton variant={'contained'} fullWidth type={'submit'}>
+                        <AddButton variant={'contained'} fullWidth type={'submit'} disabled={state.disableBtn}>
                             ACTUALIZAR PROPIEDAD
                         </AddButton>
                     </Grid>
@@ -361,6 +381,17 @@ function ListingUpdate(props) {
                 <Button variant={'contained'} onClick={props.closeDialog}>
                     CANCELAR
                 </Button>
+
+                <Snackbar
+                    open={state.openSnack}
+                    anchorOrigin={{
+                        vertical:'bottom',
+                        horizontal:'center'
+                    }}>
+                    <Alert severity="success" >
+                        Se ha actualizado correctamente esta propiedad!
+                    </Alert>
+                </Snackbar>
             </div>
         </>
     )

@@ -19,7 +19,7 @@ import StateContext from "../../contexts/state-context";
 import defaultProfilePicture from '../../activos/defaultProfilePicture.jpg'
 
 // //COMPONENT IMPORT
-// import PerfilActual from "./perfil-actual";
+// import PerfilActualizar from "./perfil-actual";
 
 //ESTILOS IMPORT
 import './agencias.css'

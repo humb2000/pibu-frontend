@@ -1,9 +1,10 @@
-import React, {useContext} from "react";
+import React, {useContext, useState, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import Axios from "axios";
 
 //MUI IMPORTS
-import {AppBar, Button, Toolbar, Typography, Menu, MenuItem, ListItemIcon} from "@mui/material";
+import {AppBar, Button, Toolbar, Typography, Menu,
+Snackbar, Alert} from "@mui/material";
 
 //ESTILOS IMPORTS
 import {LoginButton, PropertyButton} from "../../estilos/botones";
@@ -17,7 +18,7 @@ import StateContext from "../../contexts/state-context";
 import DispatchContext from "../../contexts/dispatch-context";
 
 function Header(){
-    const navegar = useNavigate();
+    const navigate = useNavigate();
 
     const GlobalState = useContext(StateContext);
     const GlobalDispatch = useContext(DispatchContext);
@@ -33,8 +34,10 @@ function Header(){
 
     function HandleProfile() {
         setAnchorEl(null);
-        navegar('/perfil')
+        navigate('/perfil')
     }
+
+    const [openSnack, setOpenSnack] = useState(false)
 
     async function HandleLogout() {
         setAnchorEl(null);
@@ -50,42 +53,50 @@ function Header(){
                 );
                 console.log(response);
                 GlobalDispatch({type: 'logout'});
-                navegar('/');
+                setOpenSnack(true)
             } catch (e) {
                 console.log(e.response);
             }
         }
     }
 
+    useEffect(() => {
+        if (openSnack){
+            setTimeout(() => {
+                navigate(0);
+            }, 1500)
+        }
+    }, [openSnack]);
+
     return(
         <>
             <AppBar position="static" style={{backgroundColor: 'black'}}>
                 <Toolbar>
                     <div className={'leftNav'}>
-                        <Button color="inherit" onClick={()=>navegar('/')}>
+                        <Button color="inherit" onClick={()=>navigate('/')}>
                             <Typography variant={'h4'}>PIBU</Typography>
                         </Button>
                     </div>
                     <div>
-                        <Button color="inherit" onClick={()=>navegar('/listados')}
+                        <Button color="inherit" onClick={()=>navigate('/listados')}
                                 style={{marginRight:'2rem'}}>
                             <Typography variant={'h6'}>Listados</Typography>
                         </Button>
-                        <Button color="inherit" onClick={()=>navegar('/agencias')}
+                        <Button color="inherit" onClick={()=>navigate('/agencias')}
                                 style={{marginLeft:'2rem'}}>
                             <Typography variant={'h6'}>Agencias</Typography>
                         </Button>
                     </div>
                     <div className={'rightNav'}>
-                        <PropertyButton onClick={()=>navegar('/addpropiedad')}>Agregar Propiedad</PropertyButton>
+                        <PropertyButton onClick={()=>navigate('/addpropiedad')}>Agregar Propiedad</PropertyButton>
 
                         {GlobalState.userIsLogged ? (
                             <LoginButton
                                 onClick={handleClick}
-                                // onClick={()=>navegar('/acceder')}
+                                // onClick={()=>navigate('/acceder')}
                             >{GlobalState.userUsername}</LoginButton>
                         ) : (
-                            <LoginButton onClick={()=>navegar('/acceder')}>Iniciar Sesion</LoginButton>
+                            <LoginButton onClick={()=>navigate('/acceder')}>Iniciar Sesion</LoginButton>
                         )}
                         <Menu
                             id="basic-menu"
@@ -113,6 +124,19 @@ function Header(){
                                 />
                             </MenuItemStyle2>
                         </Menu>
+
+                        <Snackbar
+                            open={openSnack}
+                            anchorOrigin={{
+                                vertical:'bottom',
+                                horizontal:'center'
+                            }}
+                        >
+                            <Alert severity="success" >
+                                Ha cerrado sesión correctamente!
+                            </Alert>
+                        </Snackbar>
+
                     </div>
                 </Toolbar>
             </AppBar>

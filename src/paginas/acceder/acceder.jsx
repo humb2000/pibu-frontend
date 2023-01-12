@@ -8,41 +8,56 @@ import './acceder.css'
 import {LogInUpButton} from "../../estilos/botones";
 
 //MUI IMPORTS
-import {TextField, Grid, Typography, Snackbar} from "@mui/material";
+import {TextField, Grid, Typography, Snackbar, Alert} from "@mui/material";
 
 //CONTEXT IMPORT
 import DispatchContext from "../../contexts/dispatch-context";
-import StateContext from "../../contexts/state-context";
+
 
 function Acceder() {
 
     const navigate = useNavigate();
 
     const GlobalDispatch = useContext(DispatchContext)
-    const GlobalState = useContext(StateContext)
 
     const initialState = {
         usernameValue: '',
         passwordValue: '',
         sendRequest: 0,
         token: '',
+        openSnack: false,
+        disableBtn: false,
+        serverError: false,
     }
 
     function ReducerFuction(draft, action) {
         switch (action.type) {
             case 'catchUsernameChange':
-                draft.usernameValue = action.usernameChosen
+                draft.usernameValue = action.usernameChosen;
+                draft.serverError =false;
                 break;
             case 'catchPasswordChange':
-                draft.passwordValue = action.passwordChosen
+                draft.passwordValue = action.passwordChosen;
+                draft.serverError =false;
                 break;
             case 'changeSendRequest':
-                draft.sendRequest = draft.sendRequest + 1
+                draft.sendRequest = draft.sendRequest + 1;
                 break;
             case 'catchToken':
-                draft.token = action.tokenValue
+                draft.token = action.tokenValue;
                 break;
-
+            case 'openTheSnack':
+                draft.openSnack = true;
+                break;
+            case 'disableTheBtn':
+                draft.disableBtn = true;
+                break;
+            case 'allowTheBtn':
+                draft.disableBtn = false;
+                break;
+            case 'catchServerError':
+                draft.serverError = true;
+                break;
         }
     }
 
@@ -50,8 +65,9 @@ function Acceder() {
 
     function FormSubmit(e) {
         e.preventDefault();
-        console.log('el formulario a sido mandado')
-        dispatch({type: 'changeSendRequest'})
+        console.log('el formulario a sido mandado');
+        dispatch({type: 'changeSendRequest'});
+        dispatch({type: 'disableTheBtn'});
     }
 
     useEffect(() => {
@@ -72,9 +88,10 @@ function Acceder() {
                 GlobalDispatch(
                     {type: 'catchToken', tokenValue: response.data.auth_token}
                 )
-                // navigate('/')
             } catch (error) {
+                dispatch({type: 'allowTheBtn'});
                 console.log(error.response);
+                dispatch({type:'catchServerError'})
             }
         }
         SignIn();
@@ -103,7 +120,7 @@ function Acceder() {
                     emailInfo: response.data.email,
                     idInfo: response.data.id,
                 })
-                navigate('/')
+                dispatch({type:'openTheSnack'});
             } catch (error) {
                 console.log(error.response);
             }
@@ -115,6 +132,14 @@ function Acceder() {
         }
     }, [(state.token)])
 
+    useEffect(() => {
+        if (state.openSnack){
+            setTimeout(() => {
+                navigate('/');
+            }, 1500)
+        }
+    }, [state.openSnack]);
+
     return (
         <>
             <div className={'formContainer'}>
@@ -122,6 +147,12 @@ function Acceder() {
                     <Grid item container justifyContent={'center'}>
                         <Typography variant={'h4'}>ACCEDER</Typography>
                     </Grid>
+
+                    {state.serverError ? (
+                        <Alert severity={'error'}>Usuario o Contraseña incorrecto!</Alert>
+                    ):('')}
+
+
                     <Grid item container style={{marginTop: '1rem'}}>
                         <TextField
                             id="username"
@@ -131,6 +162,7 @@ function Acceder() {
                             value={state.usernameValue}
                             onChange={(e) =>
                                 dispatch({type: 'catchUsernameChange', usernameChosen: e.target.value,})}
+                            error={state.serverError}
                         />
                     </Grid>
 
@@ -143,12 +175,15 @@ function Acceder() {
                             value={state.passwordValue}
                             onChange={(e) =>
                                 dispatch({type: 'catchPasswordChange', passwordChosen: e.target.value,})}
+                            error={state.serverError}
                         />
                     </Grid>
 
                     <Grid item container xs={8} style={{marginTop: '1rem', marginLeft: 'auto', marginRight: 'auto'}}>
                         <LogInUpButton
-                            variant={'contained'} fullWidth type={'submit'}>ACCEDER</LogInUpButton>
+                            variant={'contained'} fullWidth type={'submit'} disabled={state.disableBtn}>
+                            ACCEDER
+                        </LogInUpButton>
                     </Grid>
 
                 </form>
@@ -161,6 +196,18 @@ function Acceder() {
                             </span>
                         </Typography>
                 </Grid>
+
+                <Snackbar
+                    open={state.openSnack}
+                    anchorOrigin={{
+                        vertical:'bottom',
+                        horizontal:'center'
+                    }}
+                >
+                    <Alert severity="success" >
+                        Ha iniciado sesión correctamente!
+                    </Alert>
+                </Snackbar>
 
             </div>
         </>

@@ -22,7 +22,7 @@ import {useImmerReducer} from "use-immer";
 import {AddButton, LogInUpButton, PictureButton} from "../../estilos/botones";
 
 //COMPONENT IMPORT
-import PerfilActual from "../../component/perfil-actual";
+import PerfilActualizar from "../../component/perfil-actualizar";
 
 
 function Perfil() {
@@ -171,7 +171,7 @@ function Perfil() {
                 {WelcomeDisplay()}
             </div>
 
-            <PerfilActual userProfile={state.userProfile}/>
+            <PerfilActualizar userProfile={state.userProfile}/>
         </>
     )
 }

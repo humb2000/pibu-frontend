@@ -1,13 +1,9 @@
-import React, {useState, useEffect, useRef, useMemo, useContext} from 'react';
+import React, {useEffect, useContext} from 'react';
 import {useNavigate} from "react-router-dom";
 import Axios from "axios";
 
-//REACT LEAFLET IMPORTS
-import { MapContainer, TileLayer, useMap, Marker} from 'react-leaflet'
-import {Icon} from "leaflet/dist/leaflet-src.esm";
-
 //MUI IMPORTS
-import {TextField, Grid, Typography, FormControlLabel, Checkbox} from "@mui/material";
+import {TextField, Grid, Typography, Snackbar, Alert} from "@mui/material";
 
 //CONTEXT IMPORT
 import StateContext from "../contexts/state-context";
@@ -18,7 +14,7 @@ import icon from '../activos/Mapicons/position.png'
 import {useImmerReducer} from "use-immer";
 import {AddButton, LogInUpButton, PictureButton} from "../estilos/botones";
 
-function PerfilActual(props) {
+function PerfilActualizar(props) {
 
     const navigate = useNavigate();
     const GlobalState = useContext(StateContext)
@@ -32,6 +28,8 @@ function PerfilActual(props) {
         uploadedPicture: [],
         profilePictureValue: props.userProfile.profilePict,
         sendRequest: 0,
+        openSnack: false,
+        disableBtn: false,
     }
 
     function ReducerFuction(draft, action) {
@@ -54,7 +52,15 @@ function PerfilActual(props) {
             case 'changeSendRequest':
                 draft.sendRequest = draft.sendRequest + 1
                 break;
-
+            case 'openTheSnack':
+                draft.openSnack = true
+                break;
+            case 'disableTheBtn':
+                draft.disableBtn = true
+                break;
+            case 'allowTheBtn':
+                draft.disableBtn = false
+                break;
         }
     }
 
@@ -96,10 +102,11 @@ function PerfilActual(props) {
                     const response = await Axios.patch(
                         `http://localhost:8000/api/profiles/${GlobalState.userId}/update/`,
                         formData)
-                    console.log(response.data)
-                    navigate(0)
+                    console.log(response.data);
+                    dispatch({type:'openTheSnack'});
                 }catch (e) {
-                    console.log(e.response)
+                    console.log(e.response);
+                    dispatch({type: 'allowTheBtn'});
                 }
             }
             UpdateProfile()
@@ -110,6 +117,7 @@ function PerfilActual(props) {
     function FormSubmit(e) {
         e.preventDefault();
         dispatch({type: 'changeSendRequest'});
+        dispatch({type: 'disableTheBtn'});
     }
 
     function ProfilePictureDisplay() {
@@ -130,6 +138,14 @@ function PerfilActual(props) {
             );
         }
     }
+
+    useEffect(() => {
+        if (state.openSnack){
+            setTimeout(() => {
+                navigate(0);
+            }, 2000)
+        }
+    }, [state.openSnack]);
 
     return(
         <>
@@ -192,14 +208,28 @@ function PerfilActual(props) {
 
                     <Grid item container xs={8} style={{marginTop: '1rem', marginLeft: 'auto', marginRight: 'auto'}}>
                         <LogInUpButton
-                            variant={'contained'} fullWidth type={'submit'}>ACTUALIZAR</LogInUpButton>
+                            variant={'contained'} fullWidth type={'submit'} disabled={state.disableBtn}>
+                            ACTUALIZAR
+                        </LogInUpButton>
                     </Grid>
 
                 </form>
+
+                <Snackbar
+                    open={state.openSnack}
+                    anchorOrigin={{
+                        vertical:'bottom',
+                        horizontal:'center'
+                    }}
+                >
+                    <Alert severity="success" >
+                        Se ha actualizado el perfil correctamente!
+                    </Alert>
+                </Snackbar>
 
             </div>
         </>
     )
 }
 
-export default PerfilActual;
+export default PerfilActualizar;
