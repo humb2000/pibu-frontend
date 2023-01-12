@@ -11,7 +11,8 @@ export const CardMediaImagenStyle = styled(CardMedia)`
     padding-left: 1rem;
     padding-right: 1rem;
     height: 20rem;
-    width: 27rem;
+    width: 30rem;
+    cursor: pointer;
 `;
 
 export const TypographyPrice = styled(CardMedia)`

@@ -1,0 +1,57 @@
+.listLink {
+    margin-left: 2rem;
+    margin-right: 2rem;
+    margin-bottom: 2rem;
+}
+
+.listImag {
+    width: 45rem;
+    height: 35rem;
+}
+
+.sliderContainer {
+    position: relative;
+    margin-top: 1rem;
+}
+
+.leftArrow {
+    border-radius: 50%;
+    position: absolute;
+    cursor: pointer;
+    font-size: 3rem;
+    color: white;
+    top: 50%;
+    left: 27.5%;
+}
+.leftArrow:hover {
+        background-color: rgba(0, 255, 0, 0.35);
+     }
+
+.rightArrow {
+    border-radius: 50%;
+    position: absolute;
+    cursor: pointer;
+    font-size: 3rem;
+    color: white;
+    top: 50%;
+    right: 27.5%;
+}
+.rightArrow:hover {
+        background-color: rgba(0, 255, 0, 0.35);
+     }
+
+.price {
+    font-weight: bolder;
+    color: green;
+}
+
+.gridInfo {
+    padding: 1rem;
+    border: 1px solid black;
+    margin-top: 1rem;
+}
+
+.checkBox {
+    color: green;
+    font-size: 2rem;
+}

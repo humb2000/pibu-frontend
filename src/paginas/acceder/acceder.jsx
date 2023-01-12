@@ -8,7 +8,7 @@ import './acceder.css'
 import {LogInUpButton} from "../../estilos/botones";
 
 //MUI IMPORTS
-import {TextField, Grid, Typography} from "@mui/material";
+import {TextField, Grid, Typography, Snackbar} from "@mui/material";
 
 //CONTEXT IMPORT
 import DispatchContext from "../../contexts/dispatch-context";
@@ -42,6 +42,7 @@ function Acceder() {
             case 'catchToken':
                 draft.token = action.tokenValue
                 break;
+
         }
     }
 
@@ -160,6 +161,7 @@ function Acceder() {
                             </span>
                         </Typography>
                 </Grid>
+
             </div>
         </>
     )

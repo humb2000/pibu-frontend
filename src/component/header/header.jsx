@@ -7,7 +7,7 @@ import {AppBar, Button, Toolbar, Typography, Menu, MenuItem, ListItemIcon} from 
 
 //ESTILOS IMPORTS
 import {LoginButton, PropertyButton} from "../../estilos/botones";
-import {MenuItemStyle1, MenuItemStyle2} from "../../estilos/menu-item";
+import {MenuItemStyle1, MenuItemStyle2} from "../../estilos/menu-items";
 import IconProfile from '../../activos/Icons/profile.png'
 import IconLogout from '../../activos/Icons/logout.png'
 import './header.css';
@@ -30,6 +30,11 @@ function Header(){
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    function HandleProfile() {
+        setAnchorEl(null);
+        navegar('/perfil')
+    }
 
     async function HandleLogout() {
         setAnchorEl(null);
@@ -62,10 +67,12 @@ function Header(){
                         </Button>
                     </div>
                     <div>
-                        <Button color="inherit" onClick={()=>navegar('/listados')}>
+                        <Button color="inherit" onClick={()=>navegar('/listados')}
+                                style={{marginRight:'2rem'}}>
                             <Typography variant={'h6'}>Listados</Typography>
                         </Button>
-                        <Button color="inherit" onClick={()=>navegar('/agencias')}>
+                        <Button color="inherit" onClick={()=>navegar('/agencias')}
+                                style={{marginLeft:'2rem'}}>
                             <Typography variant={'h6'}>Agencias</Typography>
                         </Button>
                     </div>
@@ -90,7 +97,7 @@ function Header(){
                         >
 
                             <MenuItemStyle1
-                                onClick={handleClose}
+                                onClick={HandleProfile}
                             >
                                Perfil
                                 <img src={IconProfile}

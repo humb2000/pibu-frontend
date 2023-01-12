@@ -19,34 +19,35 @@ import {useImmerReducer} from "use-immer";
 import {AddButton, PictureButton} from "../../estilos/botones";
 
 
+
+const boroughOptions = [
+    { value: '', label: '' },{ value: 'Camagüey', label: 'Camagüey' },
+    { value: 'Florida', label: 'Florida' },{ value: 'Guáimaro', label: 'Guáimaro' },
+    { value: 'Vertientes', label: 'Vertientes' },{ value: 'Santa Cruz del Sur', label: 'Santa Cruz del Sur' },
+    { value: 'Nuevitas', label: 'Nuevitas' },{ value: 'Minas', label: 'Minas' },
+    { value: 'Sibanicú', label: 'Sibanicú' },{ value: 'Esmeralda', label: 'Esmeralda' },
+    { value: 'Carlos Manuel de Céspedes', label: 'Carlos Manuel de Céspedes' },
+    { value: 'Jimaguayú', label: 'Jimaguayú' },{ value: 'Sierra de Cubitas', label: 'Sierra de Cubitas' },
+    { value: 'Najasa', label: 'Najasa' }
+]
+
+const listingTypeOptions = [
+    { value: '', label: '' }, { value: 'Casa', label: 'Casa' },
+    { value: 'Apartamento', label: 'Apartamento' }, { value: 'Oficina', label: 'Oficina' },
+]
+
+const propertyStatusOptions = [
+    { value: '', label: '' }, { value: 'Venta', label: 'Venta' },
+    { value: 'Renta', label: 'Renta' },
+]
+
+const rentalFrequencyOptions = [
+    { value: '', label: '' }, { value: 'Dia', label: 'Dia' },
+    { value: 'Semana', label: 'Semana' }, { value: 'Mes', label: 'Mes' },
+]
+
+
 function AddPropiedad() {
-
-    const boroughOptions = [
-        { value: '', label: '' },{ value: 'Camagüey', label: 'Camagüey' },
-        { value: 'Florida', label: 'Florida' },{ value: 'Guáimaro', label: 'Guáimaro' },
-        { value: 'Vertientes', label: 'Vertientes' },{ value: 'Santa Cruz del Sur', label: 'Santa Cruz del Sur' },
-        { value: 'Nuevitas', label: 'Nuevitas' },{ value: 'Minas', label: 'Minas' },
-        { value: 'Sibanicú', label: 'Sibanicú' },{ value: 'Esmeralda', label: 'Esmeralda' },
-        { value: 'Carlos Manuel de Céspedes', label: 'Carlos Manuel de Céspedes' },
-        { value: 'Jimaguayú', label: 'Jimaguayú' },{ value: 'Sierra de Cubitas', label: 'Sierra de Cubitas' },
-        { value: 'Najasa', label: 'Najasa' }
-    ]
-
-    const listingTypeOptions = [
-        { value: '', label: '' }, { value: 'Casa', label: 'Casa' },
-        { value: 'Apartamento', label: 'Apartamento' }, { value: 'Oficina', label: 'Oficina' },
-    ]
-
-    const propertyStatusOptions = [
-        { value: '', label: '' }, { value: 'Venta', label: 'Venta' },
-        { value: 'Renta', label: 'Renta' },
-    ]
-
-    const rentalFrequencyOptions = [
-        { value: '', label: '' }, { value: 'Dia', label: 'Dia' },
-        { value: 'Semana', label: 'Semana' }, { value: 'Mes', label: 'Mes' },
-    ]
-
     const navigate = useNavigate();
     const GlobalState = useContext(StateContext)
 
@@ -78,6 +79,10 @@ function AddPropiedad() {
         },
         uploadedPictures: [],
         sendRequest: 0,
+        userProfile: {
+            agencyName: '',
+            phoneNumber: '',
+        }
     }
 
     function ReducerFuction(draft, action) {
@@ -157,7 +162,11 @@ function AddPropiedad() {
                 break;
 
             case 'changeSendRequest':
-                draft.sendRequest = draft.sendRequest + 1
+                draft.sendRequest = draft.sendRequest + 1;
+                break;
+            case 'changeUserProfileInfo':
+                draft.userProfile.agencyName = action.profileObject.agency_name;
+                draft.userProfile.phoneNumber = action.profileObject.phone_number;
                 break;
         }
     }
@@ -308,6 +317,20 @@ function AddPropiedad() {
     }, [state.uploadedPictures[4]])
     //...CAPTURA DE LAS FOTOS...
 
+    //REQUES TO GET PROFILE INFO
+    useEffect(() => {
+        async function GetProfileInfo() {
+            try {
+                const response = await Axios.get(`http://localhost:8000/api/profiles/${GlobalState.userId}`);
+                console.log(response.data)
+                dispatch({type: 'changeUserProfileInfo', profileObject: response.data})
+            }catch (e){
+                console.log(e.response);
+            }
+        }
+        GetProfileInfo();
+    }, []);
+
     //===ENVIAR EL FORMULARIO===
     function FormSubmit(e) {
         e.preventDefault();
@@ -318,7 +341,6 @@ function AddPropiedad() {
 
     useEffect(() => {
         if (state.sendRequest){
-            console.log('use efect estart')
             async function AddProperty() {
                 const formData = new FormData()
                 formData.append('title', state.tituloValue);
@@ -364,6 +386,40 @@ function AddPropiedad() {
             return 'Precio por Mes*';
         }else {
             return 'Precio*';
+        }
+    }
+
+    function SubmitButtonDisplay(){
+        if (GlobalState.userIsLogged &&
+            state.userProfile.agencyName !== null &&
+            state.userProfile.agencyName !== '' &&
+            state.userProfile.phoneNumber !== null &&
+            state.userProfile.phoneNumber !== ''
+        ) {
+            return(
+                <AddButton variant={'contained'} fullWidth type={'submit'}>
+                    AGREGAR PROPIEDAD
+                </AddButton>
+            );
+        } else if (GlobalState.userIsLogged && (
+            state.userProfile.agencyName === null ||
+            state.userProfile.agencyName === '' ||
+            state.userProfile.phoneNumber === null ||
+            state.userProfile.phoneNumber === ''
+        )) {
+            return (
+                <AddButton variant={'outlined'} fullWidth
+                    onClick={() => navigate('/perfil')}>
+                    COMPLETA TU PERFIL PARA AGREGAR UNA PROPIEDAD
+                </AddButton>
+            );
+        } else if (!GlobalState.userIsLogged){
+            return (
+                <AddButton variant={'outlined'} fullWidth
+                           onClick={() => navigate('/acceder')}>
+                    INICIA SESION PARA AGREGAR UNA PROPIEDAD
+                </AddButton>
+            )
         }
     }
 
@@ -602,6 +658,17 @@ function AddPropiedad() {
                     </Grid>
                     {/*...MAPA...*/}
 
+                    <Grid item container xs={6} style={{marginTop: '1rem', marginLeft: 'auto', marginRight: 'auto'}}>
+                        <PictureButton
+                            variant={'contained'} fullWidth component={'label'}>Agregar Imagenes (Max: 5)
+                            <input type={'file'} multiple accept={'image/png, image/gif, image/jpeg'} hidden
+                            onChange={(e) =>
+                                dispatch({
+                                    type: 'catchUploadedPicture',
+                                    picturesChosen : e.target.files,})}/>
+                        </PictureButton>
+                    </Grid>
+
                     <Grid item container>
                         <ul>
                             {state.picture1Value ? <li>{state.picture1Value.name}</li> : ''}
@@ -613,19 +680,7 @@ function AddPropiedad() {
                     </Grid>
 
                     <Grid item container xs={8} style={{marginTop: '1rem', marginLeft: 'auto', marginRight: 'auto'}}>
-                        <AddButton
-                            variant={'contained'} fullWidth type={'submit'}>Agregar Propiedad</AddButton>
-                    </Grid>
-
-                    <Grid item container xs={6} style={{marginTop: '1rem', marginLeft: 'auto', marginRight: 'auto'}}>
-                        <PictureButton
-                            variant={'contained'} fullWidth component={'label'}>Agregar Imagenes (Max: 5)
-                            <input type={'file'} multiple accept={'image/png, image/gif, image/jpeg'} hidden
-                            onChange={(e) =>
-                                dispatch({
-                                    type: 'catchUploadedPicture',
-                                    picturesChosen : e.target.files,})}/>
-                        </PictureButton>
+                        {SubmitButtonDisplay()}
                     </Grid>
 
                 </form>

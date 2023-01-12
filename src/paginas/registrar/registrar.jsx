@@ -1,4 +1,4 @@
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import {useNavigate} from 'react-router-dom';
 import Axios from "axios";
 import {useImmerReducer} from "use-immer";
@@ -8,7 +8,7 @@ import './registrar.css'
 import {LogInUpButton} from "../../estilos/botones";
 
 //MUI IMPORTS
-import {TextField, Grid, Typography} from "@mui/material";
+import {TextField, Grid, Typography, Snackbar, Alert} from "@mui/material";
 
 
 function Registrar() {
@@ -20,6 +20,8 @@ function Registrar() {
         passwordValue: '',
         password2Value: '',
         sendRequest: 0,
+        openSnack: false,
+        disapleBtn: false,
     }
 
     function ReducerFuction(draft, action) {
@@ -39,6 +41,15 @@ function Registrar() {
             case 'changeSendRequest':
                 draft.sendRequest = draft.sendRequest + 1
                 break;
+            case 'openTheSnack':
+                draft.openSnack = true
+                break;
+            case 'disableTheBtn':
+                draft.disapleBtn = true
+                break;
+            case 'allowTheBtn':
+                draft.disapleBtn = false
+                break;
         }
     }
 
@@ -48,6 +59,7 @@ function Registrar() {
         e.preventDefault();
         console.log('el registro a sido mandado')
         dispatch({type: 'changeSendRequest'})
+        dispatch({type: 'disableTheBtn'})
     }
 
     useEffect(() => {
@@ -65,9 +77,10 @@ function Registrar() {
                     },
                     {cancelToken: source.token}
                 );
-                console.log(response)
-                navigate('/')
+                console.log(response);
+                dispatch({type:'openTheSnack'});
             } catch (error) {
+                dispatch({type: 'allowTheBtn'})
                 console.log(error.response);
             }
         }
@@ -77,6 +90,14 @@ function Registrar() {
         };
         }
     }, [(state.sendRequest)])
+
+    useEffect(() => {
+        if (state.openSnack){
+            setTimeout(() => {
+                navigate('/acceder');
+            }, 2000)
+        }
+    }, [state.openSnack]);
 
     return (
         <>
@@ -134,7 +155,9 @@ function Registrar() {
                     </Grid>
                     <Grid item container xs={8} style={{marginTop: '1rem', marginLeft: 'auto', marginRight: 'auto'}}>
                         <LogInUpButton
-                            variant={'contained'} fullWidth type={'submit'}>Registrar</LogInUpButton>
+                            variant={'contained'} fullWidth type={'submit'} disabled={state.disapleBtn}>
+                            Registrar
+                        </LogInUpButton>
                     </Grid>
 
                 </form>
@@ -146,6 +169,18 @@ function Registrar() {
                             </span>
                         </Typography>
                 </Grid>
+
+                <Snackbar
+                    open={state.openSnack}
+                    anchorOrigin={{
+                        vertical:'bottom',
+                        horizontal:'center'
+                    }}
+                >
+                    <Alert severity="success" >
+                        Se ha creado la cunta correctamente
+                    </Alert>
+                </Snackbar>
             </div>
         </>
     )

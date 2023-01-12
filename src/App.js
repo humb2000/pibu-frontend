@@ -13,9 +13,13 @@ import Testing from "./component/testing";
 //PAGES IMPORTS
 import Principal from "./paginas/principal/principal";
 import Listados from "./paginas/listados/listados";
+import ListadoDetalle from "./component/listado-detalle/listado-detalle";
 import Registrar from "./paginas/registrar/registrar";
 import Acceder from "./paginas/acceder/acceder";
 import AddPropiedad from "./paginas/agregar-propiedad/add-propiedad";
+import Perfil from "./paginas/perfil/perfil";
+import Agencias from "./paginas/agencias/agencias";
+import AgenciaDetalle from "./component/agencia-detalle/agencia-detalle";
 
 //CONTEXT IMPORT
 import DispatchContext from "./contexts/dispatch-context";
@@ -75,10 +79,15 @@ function App() {
                         <Routes>
                             <Route path={'/'} element={<Principal/>}></Route>
                             <Route path={'/listados'} element={<Listados/>}></Route>
+                            <Route path={'/listados/:id'} element={<ListadoDetalle/>}></Route>
                             <Route path={'/testing'} element={<Testing/>}></Route>
                             <Route path={'/registrar'} element={<Registrar/>}></Route>
                             <Route path={'/acceder'} element={<Acceder/>}></Route>
                             <Route path={'/addpropiedad'} element={<AddPropiedad/>}></Route>
+                            <Route path={'/perfil'} element={<Perfil/>}></Route>
+                            <Route path={'/agencias'} element={<Agencias/>}></Route>
+                            <Route path={'/agencias/:id'} element={<AgenciaDetalle/>}></Route>
+
                         </Routes>
                     </BrowserRouter>
                 </StyledEngineProvider>

@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import {useNavigate} from "react-router-dom";
 import Axios from 'axios';
 import {useImmerReducer} from "use-immer";
 
@@ -8,7 +9,7 @@ import {Icon} from "leaflet/dist/leaflet-src.esm";
 
 //ESTILOS IMPORTS
 import 'leaflet/dist/leaflet.css'
-import {CardStyle, CardMediaImagenStyle, TypographyPrice} from "../../estilos/card";
+import {CardStyle, CardMediaImagenStyle, TypographyPrice} from "../../estilos/cards";
 
 //MUI IMPORTS
 import {
@@ -34,6 +35,8 @@ function Listados() {
     // fetch('http://localhost:8000/api/listings/')
     //     .then( response => response.json())
     //     .then(data => console.log(data))
+
+    const navigate = useNavigate();
 
     const houseIcon = new Icon({
         iconUrl: houseIconPng,
@@ -106,6 +109,10 @@ function Listados() {
         console.log(allListings[0].location);
     }
 
+    function TitleDisplay() {
+
+    }
+
     if (dataIsLoading === true){
         return (
             <Grid container justifyContent={'center'} alignItems={'center'} style={{height: '100vh'}}>
@@ -123,23 +130,30 @@ function Listados() {
                         <CardStyle key={listing.id}>
                             <CardHeader
                                 action={
-                                <IconButton aria-label="settings"
-                                          onClick={() => {
-                                              state.mapInstance.flyTo([listing.latitude, listing.longitude], 16)
-                                          }}>
-                                    <RoomIcon />
-                                </IconButton>
+                                    <IconButton aria-label="settings"
+                                              onClick={() => {
+                                                  state.mapInstance.flyTo([listing.latitude, listing.longitude], 16)
+                                              }}>
+                                        <RoomIcon />
+                                    </IconButton>
+                                }
+                                title={
+                                <Typography variant={'h5'}>
+                                    {listing.title.substring(0, 30)}
+                                    {listing.title.length > 30 ? '...' : ''}
+                                </Typography>
                             }
-                                title={listing.title}
                             />
                             <CardMediaImagenStyle
                                 component="img"
                                 image={listing.picture1}
                                 alt={listing.title}
+                                onClick={() => navigate(`/listados/${listing.id}`)}
                             />
                             <CardContent>
                                 <Typography variant="body2" >
-                                    {listing.description.substring(0, 200)}...
+                                    {listing.description.substring(0, 200)}
+                                    {listing.description.length > 200 ? '...' : ''}
                                 </Typography>
                             </CardContent>
 
@@ -161,7 +175,7 @@ function Listados() {
 
                             <CardActions disableSpacing>
                                 <IconButton aria-label="add to favorites">
-                                    {listing.seller_username}
+                                    {listing.seller_agency_name}
                                 </IconButton>
                             </CardActions>
 
@@ -171,10 +185,10 @@ function Listados() {
             </Grid>
             <Grid item xs={8} style={{marginTop: '0.5rem'}}>
                 <AppBar position={'sticky'}>
-                    <div>
+                    <div style={{backgroundColor:'white'}}>
                         <MapContainer center={center}
                                       zoom={10}
-                                      style={{width: '66vw', height: '97vh'}}
+                                      style={{width: '65vw', height: '90vh', border:'solid black'}}
                                       scrollWheelZoom={true}>
                             <TileLayer
                                 url={'https://api.maptiler.com/maps/basic-v2/256/{z}/{x}/{y}.png?key=5slgzrA6fvk9w4nOG05e'}
@@ -183,38 +197,47 @@ function Listados() {
 
                             <TheMapComponent />
 
-                            {allListings.map((listing) => {
+                            {allListings.map((listings) => {
                                 function inconDisplay(){
-                                    if(listing.listing_type === 'Casa'){
+                                    if(listings.listing_type === 'Casa'){
                                         return houseIcon
                                     }
-                                    else if (listing.listing_type === 'Apartamento'){
+                                    else if (listings.listing_type === 'Apartamento'){
                                         return apartmentIcon
                                     }
-                                    else if (listing.listing_type === 'Oficina'){
+                                    else if (listings.listing_type === 'Oficina'){
                                         return officeIcon
                                     }
                                 }
                                     return (
                                         <Marker
-                                            key={listing.id}
+                                            key={listings.id}
                                             icon={inconDisplay()}
                                             position={[
-                                                listing.latitude,
-                                                listing.longitude
+                                                listings.latitude,
+                                                listings.longitude
                                             ]}
                                         >
                                             <Popup>
-                                                <Typography variant={'h5'}>{listing.title}</Typography>
+                                                <Typography variant={'h5'}>
+                                                    {listings.title.substring(0, 22)}
+                                                    {listings.title.length > 22 ? '...' : ''}
+                                                </Typography>
                                                 <img
-                                                    src={listing.picture1}
-                                                    style={{ height: '14rem', width: '18rem' }}
+                                                    src={listings.picture1}
+                                                    style={{ height: '14rem', width: '18rem', cursor:'pointer'}}
                                                     alt={''}
+                                                    onClick={() => navigate(`/listados/${listings.id}`)}
                                                 />
                                                 <Typography variant={'body1'}>
-                                                    {listing.description.substring(0, 150)}...
+                                                    {listings.description.substring(0, 200)}
+                                                    {listings.description.length > 200 ? '...' : ''}
                                                 </Typography>
-                                                <Button variant={'contained'} fullWidth>Detalles</Button>
+                                                <Button variant={'contained'} fullWidth
+                                                        onClick={() => navigate(`/listados/${listings.id}`)}
+                                                >
+                                                    Detalles
+                                                </Button>
                                             </Popup>
 
                                         </Marker>
