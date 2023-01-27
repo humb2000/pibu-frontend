@@ -18,10 +18,3 @@ const theme = createTheme({
 });
 
 export default theme;
-
-// <ThemeProvider theme={theme}>
-//   <Button color="neutral" variant="contained">
-//     neutral
-//   </Button>
-// </ThemeProvider>
-// USAR ESTO PARA USAR LOS COLORES

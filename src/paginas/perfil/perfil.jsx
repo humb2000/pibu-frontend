@@ -1,25 +1,16 @@
-import React, {useState, useEffect, useRef, useMemo, useContext} from 'react';
+import React, {useEffect, useContext} from 'react';
 import {useNavigate} from "react-router-dom";
 import Axios from "axios";
-
-//REACT LEAFLET IMPORTS
-import { MapContainer, TileLayer, useMap, Marker} from 'react-leaflet'
-import {Icon} from "leaflet/dist/leaflet-src.esm";
+import {useImmerReducer} from "use-immer";
 
 //MUI IMPORTS
-import {TextField, Grid, Typography, FormControlLabel, Checkbox, CircularProgress, Button} from "@mui/material";
+import {Grid, Typography, CircularProgress, Button} from "@mui/material";
 
 //CONTEXT IMPORT
 import StateContext from "../../contexts/state-context";
 
 //ACTIVOS IMPORT
 import defaultProfilePicture from '../../activos/defaultProfilePicture.jpg'
-
-//ESTILOS IMPORT
-import './perfil.css'
-import icon from '../../activos/Mapicons/position.png'
-import {useImmerReducer} from "use-immer";
-import {AddButton, LogInUpButton, PictureButton} from "../../estilos/botones";
 
 //COMPONENT IMPORT
 import PerfilActualizar from "../../component/perfil-actualizar";
@@ -30,7 +21,6 @@ function Perfil() {
     const GlobalState = useContext(StateContext)
 
     const initialState = {
-
         userProfile: {
             agencyName: '',
             phoneNumber: '',
@@ -40,7 +30,6 @@ function Perfil() {
             sellerListings: [],
         },
         dataIsLoading: true,
-
     }
 
     function ReducerFuction(draft, action) {
@@ -148,7 +137,6 @@ function Perfil() {
                                 {PropertiesDisplay()}
                             </Typography>
                         </Grid>
-
 
                     </Grid>
 

@@ -1,4 +1,4 @@
-import {Card, CardMedia} from "@mui/material";
+import {Card, CardMedia, CardContent} from "@mui/material";
 import { styled } from '@mui/system';
 
 export const CardStyle = styled(Card)`
@@ -23,4 +23,9 @@ export const TypographyPrice = styled(CardMedia)`
     top: 100px;
     left: 20px;
     padding: 5px;
+`;
+
+export const CardContentAgencia = styled(CardContent)`
+    max-height: 10rem;
+    min-height: 10rem;
 `;

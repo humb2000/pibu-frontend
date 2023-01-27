@@ -8,7 +8,6 @@ import {CssBaseline} from "@mui/material";
 
 //COMPONENTS IMPORTS
 import Header from "./component/header/header";
-import Testing from "./component/testing";
 
 //PAGES IMPORTS
 import Principal from "./paginas/principal/principal";
@@ -80,7 +79,6 @@ function App() {
                             <Route path={'/'} element={<Principal/>}></Route>
                             <Route path={'/listados'} element={<Listados/>}></Route>
                             <Route path={'/listados/:id'} element={<ListadoDetalle/>}></Route>
-                            <Route path={'/testing'} element={<Testing/>}></Route>
                             <Route path={'/registrar'} element={<Registrar/>}></Route>
                             <Route path={'/acceder'} element={<Acceder/>}></Route>
                             <Route path={'/addpropiedad'} element={<AddPropiedad/>}></Route>

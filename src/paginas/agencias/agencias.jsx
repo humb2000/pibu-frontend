@@ -1,10 +1,6 @@
-import React, {useState, useEffect, useRef, useMemo, useContext} from 'react';
+import React, {useEffect} from 'react';
 import {useNavigate} from "react-router-dom";
 import Axios from "axios";
-
-//REACT LEAFLET IMPORTS
-import { MapContainer, TileLayer, useMap, Marker} from 'react-leaflet'
-import {Icon} from "leaflet/dist/leaflet-src.esm";
 
 //MUI IMPORTS
 import {
@@ -12,25 +8,16 @@ import {
     Card, CardMedia, CardContent, CardActions, Button
 } from "@mui/material";
 
-//CONTEXT IMPORT
-import StateContext from "../../contexts/state-context";
-
 //ACTIVOS IMPORT
 import defaultProfilePicture from '../../activos/defaultProfilePicture.jpg'
 
-// //COMPONENT IMPORT
-// import PerfilActualizar from "./perfil-actual";
-
 //ESTILOS IMPORT
-import './agencias.css'
-import icon from '../../activos/Mapicons/position.png'
 import {useImmerReducer} from "use-immer";
-import {AddButton, LogInUpButton, PictureButton} from "../../estilos/botones";
+import {CardContentAgencia} from "../../estilos/cards";
 
 
 function Agencias() {
     const navigate = useNavigate();
-    const GlobalState = useContext(StateContext)
 
     const initialState = {
         dataIsLoading: true,
@@ -115,7 +102,7 @@ function Agencias() {
                                        onClick={() => navigate(`/agencias/${agency.seller}`)}
                                        style={{cursor:'pointer'}}
                             />
-                            <CardContent style={{maxHeight:'10rem', minHeight:'10rem'}}>
+                            <CardContentAgencia>
                                 <Typography gutterBottom variant={'h5'} component={'div'}>
                                     {agency.agency_name.substring(0, 40)}
                                     {agency.agency_name.length > 40 ? '...' : ''}
@@ -124,7 +111,7 @@ function Agencias() {
                                     {agency.bio.substring(0, 100)}
                                     {agency.bio.length > 40 ? '...' : ''}
                                 </Typography>
-                            </CardContent>
+                            </CardContentAgencia>
 
                             <CardActions>
                                 {PropertiesDisplay()}

@@ -52,7 +52,7 @@ function AddPropiedad() {
     const GlobalState = useContext(StateContext)
 
     const initialState = {
-        tituloValue: '',
+        titleValue: '',
         listingTypeValue: '',
         descriptionValue: '',
         boroughValue: '',
@@ -85,6 +85,7 @@ function AddPropiedad() {
         },
         openSnack: false,
         disableBtn: false,
+
         titleErrors: {
             hasErrors: false,
             errorMessage: '',
@@ -101,6 +102,10 @@ function AddPropiedad() {
             hasErrors: false,
             errorMessage: '',
         },
+        roomsErrors: {
+            hasErrors: false,
+            errorMessage: '',
+        },
         boroughErrors: {
             hasErrors: false,
             errorMessage: '',
@@ -111,7 +116,7 @@ function AddPropiedad() {
     function ReducerFuction(draft, action) {
         switch (action.type) {
             case 'catchTituloChange':
-                draft.tituloValue = action.tituloChosen;
+                draft.titleValue = action.tituloChosen;
                 draft.titleErrors.hasErrors = false;
                 draft.titleErrors.errorMessage = '';
                 break;
@@ -149,6 +154,8 @@ function AddPropiedad() {
                 break;
             case 'catchRoomsChange':
                 draft.roomsValue = action.roomsChosen;
+                draft.roomsErrors.hasErrors = false;
+                draft.roomsErrors.errorMessage = '';
                 break;
             case 'catchFurnishedChange':
                 draft.furnishedValue = action.furnishedChosen;
@@ -232,6 +239,15 @@ function AddPropiedad() {
                 if (action.priceChosen.length === 0){
                     draft.priceErrors.hasErrors = true;
                     draft.priceErrors.errorMessage = 'Este campo no puede estar vacio.';
+                } else if(parseFloat(action.priceChosen) < 0){
+                    draft.priceErrors.hasErrors = true;
+                    draft.priceErrors.errorMessage = 'Este campo no puede ser un numero negativo.';
+                }
+                break;
+            case 'catchRoomsErrors':
+                if (parseFloat(action.roomsChosen) < 0){
+                    draft.roomsErrors.hasErrors = true;
+                    draft.roomsErrors.errorMessage = 'Este campo no puede ser un numero negativo.';
                 }
                 break;
             case 'catchBoroughErrors':
@@ -255,6 +271,14 @@ function AddPropiedad() {
             case 'emptyPrice':
                     draft.priceErrors.hasErrors = true;
                     draft.priceErrors.errorMessage = 'Este campo no puede estar vacio.';
+                break;
+            case 'negativePrice':
+                    draft.priceErrors.hasErrors = true;
+                    draft.priceErrors.errorMessage = 'Este campo no puede ser un numero negativo.';
+                break;
+            case 'negativeRooms':
+                    draft.roomsErrors.hasErrors = true;
+                    draft.roomsErrors.errorMessage = 'Este campo no puede ser un numero negativo.';
                 break;
             case 'emptyBorough':
                     draft.boroughErrors.hasErrors = true;
@@ -430,13 +454,14 @@ function AddPropiedad() {
             !state.listingTypeErrors.hasErrors &&
             !state.propertyStatusErrors.hasErrors &&
             !state.priceErrors.hasErrors &&
+            !state.roomsErrors.hasErrors &&
             !state.boroughErrors.hasErrors &&
             state.latitudeValue &&
             state.longitudeValue
         ) {
             dispatch({type: 'changeSendRequest'});
             dispatch({type: 'disableTheBtn'})
-        } else if (state.tituloValue === ''){
+        } else if (state.titleValue === ''){
             dispatch({type: 'emptyTitle'})
             window.scrollTo(0, 0);
         } else if (state.listingTypeValue === ''){
@@ -448,18 +473,23 @@ function AddPropiedad() {
         } else if (state.priceValue === ''){
             dispatch({type: 'emptyPrice'})
             window.scrollTo(0, 0);
+        } else if (parseFloat(state.priceValue) < 0){
+            dispatch({type: 'negativePrice'})
+            window.scrollTo(0, 0);
+        } else if (parseFloat(state.roomsValue) < 0){
+            dispatch({type: 'negativeRooms'})
+            window.scrollTo(0, 500);
         } else if (state.boroughValue === ''){
             dispatch({type: 'emptyBorough'})
             window.scrollTo(0, 500);
         }
-
     }
 
     useEffect(() => {
         if (state.sendRequest){
             async function AddProperty() {
                 const formData = new FormData()
-                formData.append('title', state.tituloValue);
+                formData.append('title', state.titleValue);
                 formData.append('description', state.descriptionValue);
                 formData.append('borough', state.boroughValue);
                 formData.append('listing_type', state.listingTypeValue);
@@ -561,7 +591,7 @@ function AddPropiedad() {
                             label="Titulo*"
                             variant="standard"
                             fullWidth
-                            value={state.tituloValue}
+                            value={state.titleValue}
                             onChange={(e) =>
                                 dispatch({type: 'catchTituloChange',
                                     tituloChosen: e.target.value,})}
@@ -698,6 +728,13 @@ function AddPropiedad() {
                                     dispatch({
                                         type: 'catchRoomsChange',
                                         roomsChosen : e.target.value,})}
+                                onBlur={(e) =>
+                                    dispatch({
+                                        type: 'catchRoomsErrors',
+                                        roomsChosen : e.target.value,})}
+                                error={state.roomsErrors.hasErrors}
+                                helperText={state.roomsErrors.errorMessage}
+
                             />
                         </Grid>)
                     }

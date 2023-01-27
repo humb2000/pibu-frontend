@@ -9,10 +9,8 @@ import {TextField, Grid, Typography, Snackbar, Alert} from "@mui/material";
 import StateContext from "../contexts/state-context";
 
 //ESTILOS IMPORT
-import '../paginas/perfil/perfil.css'
-import icon from '../activos/Mapicons/position.png'
 import {useImmerReducer} from "use-immer";
-import {AddButton, LogInUpButton, PictureButton} from "../estilos/botones";
+import {LogInUpButton, PictureButton} from "../estilos/botones";
 
 function PerfilActualizar(props) {
 

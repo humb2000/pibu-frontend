@@ -14,3 +14,13 @@
     font-weight: bolder;
     -webkit-text-stroke: 2px black;
 }
+.textoSecundario{
+    margin-top: revert;
+    color: white;
+    font-weight: bolder;
+    -webkit-text-stroke: 2px black;
+}
+
+.spamStyle {
+    color: green;
+}

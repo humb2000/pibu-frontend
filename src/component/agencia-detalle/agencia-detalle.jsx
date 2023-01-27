@@ -11,6 +11,8 @@ import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 //ACTIVOS IMPORT
 import defaultProfilePicture from '../../activos/defaultProfilePicture.jpg'
 
+//ESTILOS IMPORT
+import {CardContentAgencia} from "../../estilos/cards";
 
 function AgenciaDetalle() {
     const navigate = useNavigate();
@@ -113,9 +115,9 @@ function AgenciaDetalle() {
 
                 <Grid container justifyContent={'flex-start'} spacing={2} style={{padding:'10px'}}>
                     {state.userProfile.sellerListings.map((listings)=>{
-
                         return (
-                            <Grid item key={listings.id} style={{marginTop:'1rem', maxWidth:'20rem', minWidth:'20rem'}}>
+                            <Grid item key={listings.id}
+                                  style={{marginTop:'1rem', maxWidth:'20rem', minWidth:'20rem'}}>
                                 <Card>
                                     <CardMedia component={'img'} height={'140'} alt={'Imagen de Listados'}
                                                image={`http://localhost:8000${listings.picture1}`
@@ -124,7 +126,7 @@ function AgenciaDetalle() {
                                                onClick={() => navigate(`/listados/${listings.id}`)}
                                                style={{cursor:'pointer'}}
                                     />
-                                    <CardContent>
+                                    <CardContentAgencia>
                                         <Typography gutterBottom variant={'h5'} component={'div'}>
                                             {listings.title.substring(0, 40)}
                                             {listings.title.length > 40 ? '...' : ''}
@@ -133,7 +135,7 @@ function AgenciaDetalle() {
                                             {listings.description.substring(0, 100)}
                                             {listings.description.length > 100 ? '...' : ''}
                                         </Typography>
-                                    </CardContent>
+                                    </CardContentAgencia>
 
                                     <CardActions>
                                         {listings.property_status === 'Venta'
