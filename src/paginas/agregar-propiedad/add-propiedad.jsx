@@ -113,7 +113,7 @@ function AddPropiedad() {
 
     }
 
-    function ReducerFuction(draft, action) {
+    function ReducerFunction(draft, action) {
         switch (action.type) {
             case 'catchTituloChange':
                 draft.titleValue = action.tituloChosen;
@@ -287,7 +287,7 @@ function AddPropiedad() {
         }
     }
 
-    const [state, dispatch] = useImmerReducer(ReducerFuction, initialState);
+    const [state, dispatch] = useImmerReducer(ReducerFunction, initialState);
 
     //===COSAS MAPA===
     const MyIcon = new Icon({
@@ -545,7 +545,7 @@ function AddPropiedad() {
         ) {
             return(
                 <AddButton variant={'contained'} fullWidth type={'submit'} disabled={state.disableBtn}>
-                    AGREGAR PROPIEDAD
+                    AGREGAR
                 </AddButton>
             );
         } else if (GlobalState.userIsLogged && (

@@ -71,7 +71,6 @@ function ListadoDetalle() {
         async function GetListingInfo() {
             try {
                 const response = await Axios.get(`http://localhost:8000/api/listings/${params.id}/`);
-                console.log(response.data)
                 dispatch({type: 'catchListingInfo', listingObject: response.data})
             }catch (e){
                 console.log(e.response);
@@ -87,7 +86,6 @@ function ListadoDetalle() {
             async function GetProfileInfo() {
                 try {
                     const response = await Axios.get(`http://localhost:8000/api/profiles/${state.listingInfo.seller}/`);
-                    console.log(response.data)
                     dispatch({type: 'catchSellerProfileInfo', profileObject: response.data})
                     dispatch({type: 'loadingDone'})
                 }catch (e){
@@ -138,7 +136,6 @@ function ListadoDetalle() {
         if (confirmDelte){
             try {
                 const response = await Axios.delete(`http://localhost:8000/api/listings/${params.id}/delete/`)
-                console.log(response.data)
                 dispatch({type:'openTheSnack'});
                 dispatch({type: 'disableTheBtn'});
             }catch (e) {
@@ -337,6 +334,7 @@ function ListadoDetalle() {
                         >
                             Actualizar
                         </Button>
+
                         <Button variant={'contained'} color={'error'}
                                 onClick={DeleteProp} disabled={state.disableBtn}
                         >

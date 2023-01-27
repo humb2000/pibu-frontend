@@ -74,16 +74,12 @@ function ListingUpdate(props) {
             hasErrors: false,
             errorMessage: '',
         },
-        boroughErrors: {
-            hasErrors: false,
-            errorMessage: '',
-        },
 
     }
 
-    function ReducerFuction(draft, action) {
+    function ReducerFunction(draft, action) {
         switch (action.type) {
-            case 'catchTituloChange':
+            case 'catchTitleChange':
                 draft.titleValue = action.tituloChosen;
                 draft.titleErrors.hasErrors = false;
                 draft.titleErrors.errorMessage = '';
@@ -95,17 +91,6 @@ function ListingUpdate(props) {
                 break;
             case 'catchDescriptionChange':
                 draft.descriptionValue = action.descriptionChosen;
-                break;
-            case 'catchBoroughChange':
-                draft.boroughValue = action.boroughChosen;
-                draft.boroughErrors.hasErrors = false;
-                draft.boroughErrors.errorMessage = '';
-                break;
-            case 'catchLatitudeChange':
-                draft.latitudeValue = action.latitudeChosen;
-                break;
-            case 'catchLongitudeChange':
-                draft.longitudeValue = action.longitudeChosen;
                 break;
             case 'catchPropertyStatusChange':
                 draft.propertyStatusValue = action.propertyStatusChosen;
@@ -158,12 +143,6 @@ function ListingUpdate(props) {
 
             case 'getMap':
                 draft.mapInstance = action.mapData;
-                break;
-            case 'changeMarkerPosition':
-                draft.markerPosition.lat = action.changeLatitude;
-                draft.markerPosition.lng = action.changeLongitude;
-                draft.latitudeValue = '';
-                draft.longitudeValue = '';
                 break;
             case 'catchUploadedPicture':
                 draft.uploadedPictures = action.picturesChosen;
@@ -218,12 +197,6 @@ function ListingUpdate(props) {
                     draft.roomsErrors.errorMessage = 'Este campo no puede ser un numero negativo.';
                 }
                 break;
-            case 'catchBoroughErrors':
-                if (action.boroughChosen.length === 0){
-                    draft.boroughErrors.hasErrors = true;
-                    draft.boroughErrors.errorMessage = 'Este campo no puede estar vacio.';
-                }
-                break;
             case 'emptyTitle':
                 draft.titleErrors.hasErrors = true;
                 draft.titleErrors.errorMessage = 'Este campo no puede estar vacio.';
@@ -248,14 +221,10 @@ function ListingUpdate(props) {
                     draft.roomsErrors.hasErrors = true;
                     draft.roomsErrors.errorMessage = 'Este campo no puede ser un numero negativo.';
                 break;
-            case 'emptyBorough':
-                    draft.boroughErrors.hasErrors = true;
-                    draft.boroughErrors.errorMessage = 'Este campo no puede estar vacio.';
-                break;
         }
     }
 
-    const [state, dispatch] = useImmerReducer(ReducerFuction, initialState);
+    const [state, dispatch] = useImmerReducer(ReducerFunction, initialState);
 
 
     //===ENVIAR EL FORMULARIO===
@@ -265,10 +234,7 @@ function ListingUpdate(props) {
             !state.listingTypeErrors.hasErrors &&
             !state.propertyStatusErrors.hasErrors &&
             !state.priceErrors.hasErrors &&
-            !state.roomsErrors.hasErrors &&
-            !state.boroughErrors.hasErrors &&
-            state.latitudeValue &&
-            state.longitudeValue
+            !state.roomsErrors.hasErrors
         ) {
             dispatch({type: 'changeSendRequest'});
             dispatch({type: 'disableTheBtn'})
@@ -289,9 +255,6 @@ function ListingUpdate(props) {
             window.scrollTo(0, 0);
         } else if (parseFloat(state.roomsValue) < 0){
             dispatch({type: 'negativeRooms'})
-            window.scrollTo(0, 500);
-        } else if (state.boroughValue === ''){
-            dispatch({type: 'emptyBorough'})
             window.scrollTo(0, 500);
         }
     }
@@ -367,7 +330,7 @@ function ListingUpdate(props) {
                             fullWidth
                             value={state.titleValue}
                             onChange={(e) =>
-                                dispatch({type: 'catchTituloChange', tituloChosen: e.target.value,})}
+                                dispatch({type: 'catchTitleChange', tituloChosen: e.target.value,})}
                             onBlur={(e) =>
                                 dispatch({type: 'catchTitleErrors',
                                     tituloChosen: e.target.value,})}
@@ -586,9 +549,10 @@ function ListingUpdate(props) {
                     </Grid>
 
                 </form>
+                <Grid item container xs={8} style={{marginTop: '1rem',}}>
                 <Button variant={'contained'} onClick={props.closeDialog}>
                     CANCELAR
-                </Button>
+                </Button></Grid>
 
                 <Snackbar
                     open={state.openSnack}
