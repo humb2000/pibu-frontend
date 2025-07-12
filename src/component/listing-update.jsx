@@ -542,17 +542,21 @@ function ListingUpdate(props) {
                         </Grid>
                     </Grid>
 
-                    <Grid item container xs={8} style={{marginTop: '1rem', marginLeft: 'auto', marginRight: 'auto'}}>
-                        <AddButton variant={'contained'} fullWidth type={'submit'} disabled={state.disableBtn}>
-                            ACTUALIZAR PROPIEDAD
+                    <Grid item container xs={8} style={{marginTop: '2rem', marginLeft: 'auto', marginRight: 'auto'}}
+                          justifyContent={'space-around'}
+                    >
+                        <AddButton variant={'contained'}  type={'submit'} disabled={state.disableBtn}>
+                            ACTUALIZAR
                         </AddButton>
+
+                        <Button variant={'contained'} onClick={props.closeDialog} style={{fontSize:'1.1rem'}}>
+                            CANCELAR
+                        </Button>
                     </Grid>
 
                 </form>
-                <Grid item container xs={8} style={{marginTop: '1rem',}}>
-                <Button variant={'contained'} onClick={props.closeDialog}>
-                    CANCELAR
-                </Button></Grid>
+                {/*<Grid item container xs={8} style={{marginTop: '1rem',}}>*/}
+                {/*</Grid>*/}
 
                 <Snackbar
                     open={state.openSnack}
